@@ -1,0 +1,268 @@
+[Batsman 0] both miss, byes scenario.
+[UmpireSignal] Strike changed on bye. New striker=1
+[Bowler 1] bowls delivery 2.
+[Keeper 0] gathers the missed ball.
+[Batsman 1] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 1] bowls delivery 3.
+[Batsman 1] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 1] bowls delivery 4.
+[Batsman 1] clean bowled.
+[Umpire] SJF selected batsman 10 from pavilion.
+[Batsman 10] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=6 runs.
+[Batsman 10] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=2 runs.
+[Bowler 1] bowls delivery 5.
+[Batsman 10] clean hit into the outfield.
+[Bowler 1] bowls delivery 6.
+[Fielder 10] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=0
+[Bowler 1] bowls delivery 7.
+[Batsman 0] both miss, byes scenario.
+[UmpireSignal] Strike changed on bye. New striker=0
+[Umpire] Over complete: context switch striker end.
+[Keeper 0] gathers the missed ball.
+[Batsman 0] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=4 runs.
+[BowlerManager] RR switch: bowler_index 0 -> 1, deliveries=6.
+[Bowler 2] bowls delivery 9.
+[Batsman 0] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=2 runs.
+[Bowler 2] bowls delivery 10.
+[Batsman 0] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 2] bowls delivery 11.
+[Batsman 0] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=4 runs.
+[Batsman 0] hesitation at crease: forced deadlock scenario triggered.
+[Batsman 0] clean bowled.
+[Bowler 2] bowls delivery 12.
+[Umpire] SJF selected batsman 9 from pavilion.
+[Batsman 9] clean bowled.
+[Umpire] SJF selected batsman 8 from pavilion.
+[Batsman 8] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=10
+[Umpire] Over complete: context switch striker end.
+[Batsman 8] clean hit into the outfield.
+[Bowler 2] bowls delivery 13.
+[Fielder 10] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=10
+[Batsman 10] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=8
+[Batsman 10] hesitation at crease: forced deadlock scenario triggered.
+[Bowler 3] bowls delivery 14.
+[BowlerManager] RR switch: bowler_index 1 -> 2, deliveries=5.
+[Batsman 8] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=2 runs.
+[Bowler 3] bowls delivery 16.
+[Batsman 8] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=2 runs.
+[Bowler 3] bowls delivery 17.
+[Batsman 8] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 3] bowls delivery 18.
+[Batsman 8] clean hit into the outfield.
+[Fielder 9] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=10
+[Bowler 3] bowls delivery 19.
+[Batsman 10] clean hit into the outfield.
+[Umpire] Over complete: context switch striker end.
+[Batsman 8] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=1 runs.
+[Fielder 6] fields cleanly, result=4 runs.
+[BowlerManager] RR switch: bowler_index 2 -> 3, deliveries=5.
+[Bowler 4] bowls delivery 21.
+[Batsman 8] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Batsman 8] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=10
+[Bowler 4] bowls delivery 23.
+[Batsman 10] clean hit into the outfield.
+[Fielder 10] takes the catch.
+[Batsman 10] out caught.
+[Umpire] SJF selected batsman 7 from pavilion.
+[Batsman 7] clean hit into the outfield.
+[Fielder 7] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=8
+[Bowler 4] bowls delivery 24.
+[Batsman 8] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Umpire] Over complete: context switch striker end.
+[Bowler 4] bowls delivery 25.
+[Batsman 7] clean hit into the outfield.
+[Fielder 7] fields cleanly, result=2 runs.
+[Batsman 7] hesitation at crease: forced deadlock scenario triggered.
+[BowlerManager] RR switch: bowler_index 3 -> 4, deliveries=4.
+[Bowler 5] bowls delivery 26.
+[Batsman 7] clean hit into the outfield.
+[Fielder 9] fields cleanly, result=2 runs.
+[Batsman 7] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=2 runs.
+[Bowler 5] bowls delivery 28.
+[Batsman 7] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=8
+[Batsman 8] clean hit into the outfield.
+[Bowler 5] bowls delivery 29.
+[Fielder 10] fields cleanly, result=2 runs.
+[Batsman 8] safe miss, keeper to collect.
+[Bowler 5] bowls delivery 30.
+[Keeper 0] gathers the missed ball.
+[Umpire] Over complete: context switch striker end.
+[Batsman 7] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=8
+[Batsman 8] clean hit into the outfield.
+[Fielder 8] takes the catch.
+[Batsman 8] out caught.
+[BowlerManager] RR switch: bowler_index 4 -> 0, deliveries=4.
+[Bowler 1] bowls delivery 32.
+[Umpire] SJF selected batsman 6 from pavilion.
+[Batsman 6] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=7
+[Batsman 7] safe miss, keeper to collect.
+[Bowler 1] bowls delivery 33.
+[Keeper 0] gathers the missed ball.
+[Batsman 7] clean hit into the outfield.
+[Bowler 1] bowls delivery 34.
+[Fielder 6] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=6
+[Bowler 1] bowls delivery 35.
+[Batsman 6] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=2 runs.
+[Bowler 1] bowls delivery 36.
+[Batsman 6] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=2 runs.
+[Bowler 1] bowls delivery 37.
+[Umpire] Over complete: context switch striker end.
+[Batsman 7] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[BowlerManager] RR switch: bowler_index 0 -> 1, deliveries=6.
+[Bowler 2] bowls delivery 38.
+[Batsman 7] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=4 runs.
+[Batsman 7] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=2 runs.
+[Bowler 2] bowls delivery 40.
+[Batsman 7] clean hit into the outfield.
+[Fielder 7] fields cleanly, result=4 runs.
+[Bowler 2] bowls delivery 41.
+[Batsman 7] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 2] bowls delivery 42.
+[Batsman 7] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=4 runs.
+[Umpire] Over complete: context switch striker end.
+[Batsman 6] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=4 runs.
+[BowlerManager] RR switch: bowler_index 1 -> 2, deliveries=4.
+[Bowler 3] bowls delivery 44.
+[Batsman 6] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=7
+[Batsman 7] safe miss, keeper to collect.
+[Bowler 3] bowls delivery 45.
+[Keeper 0] gathers the missed ball.
+[Batsman 7] clean hit into the outfield.
+[Bowler 3] bowls delivery 46.
+[Fielder 10] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=6
+[Batsman 6] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=7
+[Batsman 7] clean hit into the outfield.
+[Bowler 3] bowls delivery 48.
+[Fielder 10] fields cleanly, result=4 runs.
+[Bowler 3] bowls delivery 49.
+[Batsman 7] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Umpire] Over complete: context switch striker end.
+[Batsman 6] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=7
+[Batsman 7] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=6
+[BowlerManager] RR switch: bowler_index 2 -> 3, deliveries=5.
+[Bowler 4] bowls delivery 52.
+[Batsman 6] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 4] bowls delivery 53.
+[Batsman 6] clean hit into the outfield.
+[Fielder 7] takes the catch.
+[Batsman 6] out caught.
+[Umpire] SJF selected batsman 5 from pavilion.
+[Batsman 5] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=7
+[Bowler 4] bowls delivery 54.
+[Batsman 7] clean hit into the outfield.
+[Fielder 7] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=5
+[Bowler 4] bowls delivery 55.
+[Umpire] Over complete: context switch striker end.
+[Batsman 7] clean hit into the outfield.
+[Fielder 7] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=5
+[BowlerManager] RR switch: bowler_index 3 -> 4, deliveries=4.
+[Bowler 5] bowls delivery 56.
+[Batsman 5] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Batsman 5] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 5] bowls delivery 58.
+[Batsman 5] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 5] bowls delivery 59.
+[Batsman 5] clean bowled.
+[Umpire] SJF selected batsman 4 from pavilion.
+[Batsman 4] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Batsman 4] safe miss, keeper to collect.
+[Keeper 0] gathers the missed ball.
+[Bowler 5] bowls delivery 61.
+[Umpire] Over complete: context switch striker end.
+[Batsman 7] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=4 runs.
+[BowlerManager] RR switch: bowler_index 4 -> 0, deliveries=4.
+[Batsman 7] clean hit into the outfield.
+[Fielder 6] fields cleanly, result=2 runs.
+[Bowler 1] bowls delivery 63.
+[Batsman 7] clean bowled.
+[Umpire] SJF selected batsman 3 from pavilion.
+[Batsman 3] clean hit into the outfield.
+[Fielder 9] takes the catch.
+[Batsman 3] out caught.
+[Umpire] SJF selected batsman 2 from pavilion.
+[Batsman 2] clean hit into the outfield.
+[Fielder 10] fields cleanly, result=4 runs.
+[Batsman 2] safe miss, keeper to collect.
+[Bowler 1] bowls delivery 64.
+[Keeper 0] gathers the missed ball.
+[Batsman 2] safe miss, keeper to collect.
+[Bowler 1] bowls delivery 65.
+[Keeper 0] gathers the missed ball.
+[Batsman 2] safe miss, keeper to collect.
+[Bowler 1] bowls delivery 66.
+[Keeper 0] gathers the missed ball.
+[Bowler 1] bowls delivery 67.
+[Batsman 2] clean hit into the outfield.
+[Fielder 8] fields cleanly, result=4 runs.
+[Umpire] Over complete: context switch striker end.
+[Batsman 4] clean hit into the outfield.
+[Fielder 9] fields cleanly, result=1 runs.
+[UmpireSignal] Strike changed after odd run. New striker=2
+[Batsman 2] clean bowled.
+[BowlerManager] RR switch: bowler_index 0 -> 1, deliveries=5.
+
+========== FINAL SCORECARD ==========
+Final Score: 100
+Wickets: 10
+Overs Bowled: 11.2
+=====================================

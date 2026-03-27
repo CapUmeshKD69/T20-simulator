@@ -1,0 +1,23 @@
+role,id,name
+Batsman,0,Rohit Sharma
+Batsman,1,Virat Kohli
+Batsman,2,Shubman Gill
+Batsman,3,Suryakumar Yadav
+Batsman,4,Hardik Pandya
+Batsman,5,Rinku Singh
+Batsman,6,Ravindra Jadeja
+Batsman,7,MS Dhoni
+Batsman,8,KL Rahul
+Batsman,9,Shivam Dube
+Batsman,10,Rohit Sharma
+Bowler,1,Abhishek Sharma
+Bowler,2,Virat Kohli
+Bowler,3,Suryakumar Yadav
+Bowler,4,Hardik Pandya
+Bowler,5,Shivam Dube
+Keeper,0,MS Dhoni
+Fielder,6,Axar Patel
+Fielder,7,Kuldeep Yadav
+Fielder,8,Varun Chakravarthy
+Fielder,9,Arshdeep Singh
+Fielder,10,Jasprit Bumrah

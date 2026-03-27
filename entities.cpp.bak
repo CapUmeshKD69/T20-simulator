@@ -1,0 +1,999 @@
+#include "entities.h"
+
+#include <cerrno>
+#include <functional>
+#include <cstdio>
+#include <random>
+#include <thread>
+#include <ctime>
+#include <unistd.h>
+
+namespace {
+
+int LockChecked(pthread_mutex_t* mutex, const char* op_name) {
+    const int rc = pthread_mutex_lock(mutex);
+    if (rc != 0) {
+        errno = rc;
+        perror(op_name);
+    }
+    return rc;
+}
+
+int UnlockChecked(pthread_mutex_t* mutex, const char* op_name) {
+    const int rc = pthread_mutex_unlock(mutex);
+    if (rc != 0) {
+        errno = rc;
+        perror(op_name);
+    }
+    return rc;
+}
+
+int SignalChecked(pthread_cond_t* cond_var, const char* op_name) {
+    const int rc = pthread_cond_signal(cond_var);
+    if (rc != 0) {
+        errno = rc;
+        perror(op_name);
+    }
+    return rc;
+}
+
+int BroadcastChecked(pthread_cond_t* cond_var, const char* op_name) {
+    const int rc = pthread_cond_broadcast(cond_var);
+    if (rc != 0) {
+        errno = rc;
+        perror(op_name);
+    }
+    return rc;
+}
+
+int Logf(const char* fmt, int a = -1, int b = -1) {
+    if (LockChecked(&log_mutex, "pthread_mutex_lock(log_mutex) failed") != 0) {
+        return -1;
+    }
+    if (b == -1) {
+        std::printf(fmt, a);
+    } else {
+        std::printf(fmt, a, b);
+    }
+    std::fflush(stdout);
+    if (UnlockChecked(&log_mutex, "pthread_mutex_unlock(log_mutex) failed") != 0) {
+        return -1;
+    }
+    return 0;
+}
+
+void LogGanttEvent(pthread_t thread_id, const char* role, const char* action, const char* resource) {
+    if (LockChecked(&file_mutex, "pthread_mutex_lock(file_mutex) failed") != 0) {
+        return;
+    }
+
+    if (gantt_log_file.is_open()) {
+        const size_t tid_value = std::hash<pthread_t>{}(thread_id);
+        gantt_log_file << get_timestamp() << ','
+                       << tid_value << ','
+                       << role << ','
+                       << action << ','
+                       << resource << '\n';
+        gantt_log_file.flush();
+    }
+
+    UnlockChecked(&file_mutex, "pthread_mutex_unlock(file_mutex) failed");
+}
+
+bool MatchOver() {
+    if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+        return true;
+    }
+    const bool over = (g_match_context.current_over >= 20 || g_match_context.total_wickets >= 10 || match_completed);
+    UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+    return over;
+}
+
+void MarkEndOwner(int end_number, pthread_t owner) {
+    if (end_number == 1) {
+        end1_owner = owner;
+    } else {
+        end2_owner = owner;
+    }
+}
+
+void ClearEndOwner(int end_number) {
+    if (end_number == 1) {
+        end1_owner = static_cast<pthread_t>(0);
+    } else {
+        end2_owner = static_cast<pthread_t>(0);
+    }
+}
+
+void SwapStrikeUnsafe() {
+    const int previous_striker = active_striker_id;
+    active_striker_id = non_striker_id;
+    non_striker_id = previous_striker;
+
+    PlayerControlBlock* tmp = active_striker_pcb;
+    active_striker_pcb = active_non_striker_pcb;
+    active_non_striker_pcb = tmp;
+}
+
+}  // namespace
+
+double get_timestamp() {
+    const auto now = std::chrono::high_resolution_clock::now();
+    const auto elapsed = std::chrono::duration<double, std::milli>(now - simulation_start_time);
+    return elapsed.count();
+}
+
+void* bowler_routine(void* arg) {
+    auto* pcb = static_cast<PlayerControlBlock*>(arg);
+    const int bowler_id = (pcb != nullptr) ? pcb->player_id : -1;
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
+
+    while (!MatchOver() && pcb != nullptr && pcb->is_active_on_pitch) {
+        if (pcb->deliveries_bowled >= 6) {
+            usleep(2000);
+            pthread_testcancel();
+            continue;
+        }
+
+        if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+        const int completed_deliveries = (g_match_context.current_over * 6) + g_match_context.balls_in_current_over;
+        bool should_announce = false;
+        if (completed_deliveries > last_announced_delivery) {
+            last_announced_delivery = completed_deliveries;
+            should_announce = true;
+        }
+        if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        if (!should_announce) {
+            usleep(2000);
+            pthread_testcancel();
+            continue;
+        }
+
+        if (Logf("[Bowler %d] bowls delivery %d.\n", bowler_id, completed_deliveries + 1) != 0) {
+            return nullptr;
+        }
+
+        if (LockChecked(&ball_mutex, "pthread_mutex_lock(ball_mutex) failed") != 0) {
+            return nullptr;
+        }
+        LogGanttEvent(pthread_self(), "Bowler", "Acquired", "Pitch");
+        if (pcb != nullptr) {
+            ++pcb->deliveries_bowled;
+        }
+        LogGanttEvent(pthread_self(), "Bowler", "Released", "Pitch");
+        if (UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        pthread_testcancel();
+        usleep(3000);
+    }
+
+    return nullptr;
+}
+
+void* bowler_manager_routine(void* arg) {
+    (void)arg;
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
+
+    while (true) {
+        if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        while (!over_change_requested && !match_completed) {
+            const int rc = pthread_cond_wait(&bowler_manager_cond, &score_mutex);
+            if (rc != 0) {
+                errno = rc;
+                perror("pthread_cond_wait(bowler_manager_cond, score_mutex) failed");
+                UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+                return nullptr;
+            }
+        }
+
+        if (match_completed) {
+            UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+            break;
+        }
+
+        over_change_requested = false;
+        PlayerControlBlock* previous = current_bowler_pcb;
+        const int previous_index = current_bowler_index;
+
+        if (bowler_pool_size <= 0) {
+            UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+            continue;
+        }
+
+        current_bowler_index = (current_bowler_index + 1) % bowler_pool_size;
+        PlayerControlBlock* next = bowler_pool[current_bowler_index];
+        current_bowler_pcb = next;
+
+        UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+
+        if (previous != nullptr && previous->thread_id != static_cast<pthread_t>(0)) {
+            previous->is_active_on_pitch = false;
+            // Wake sleeping fielders/bowler so the previous bowler can observe
+            // is_active_on_pitch=false and exit gracefully.
+            const int wake_rc = pthread_cond_broadcast(&fielders_cond);
+            if (wake_rc != 0) {
+                errno = wake_rc;
+                perror("pthread_cond_broadcast(fielders_cond) failed");
+            }
+            pthread_join(previous->thread_id, nullptr);
+            previous->thread_id = static_cast<pthread_t>(0);
+        }
+
+        if (next != nullptr) {
+            next->is_active_on_pitch = true;
+            next->is_waiting_in_pavilion = false;
+            next->deliveries_bowled = 0;
+
+            const int create_rc = pthread_create(&next->thread_id, nullptr, bowler_routine, next);
+            if (create_rc != 0) {
+                errno = create_rc;
+                perror("pthread_create(next bowler) failed");
+            }
+
+            if (LockChecked(&log_mutex, "pthread_mutex_lock(log_mutex) failed") != 0) {
+                return nullptr;
+            }
+            std::printf("[BowlerManager] RR switch: bowler_index %d -> %d, deliveries=%d.\n",
+                        previous_index,
+                        current_bowler_index,
+                        (previous != nullptr) ? previous->deliveries_bowled : 0);
+            std::fflush(stdout);
+            if (UnlockChecked(&log_mutex, "pthread_mutex_unlock(log_mutex) failed") != 0) {
+                return nullptr;
+            }
+        }
+
+        pthread_testcancel();
+    }
+
+    return nullptr;
+}
+
+void* fielder_routine(void* arg) {
+    auto* pcb = static_cast<PlayerControlBlock*>(arg);
+    if (pcb == nullptr) {
+        return nullptr;
+    }
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
+
+    thread_local std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> field_roll(1, 100);
+
+    while (!MatchOver()) {
+        if (LockChecked(&ball_mutex, "pthread_mutex_lock(ball_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        if (pcb->role == PlayerRole::WICKETKEEPER) {
+            while (!keeper_event_pending && !match_completed) {
+                const int rc = pthread_cond_wait(&keeper_cond, &ball_mutex);
+                if (rc != 0) {
+                    errno = rc;
+                    perror("pthread_cond_wait(keeper_cond, ball_mutex) failed");
+                    UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                    return nullptr;
+                }
+            }
+
+            if (match_completed) {
+                UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                break;
+            }
+
+            keeper_event_pending = false;
+            if (shared_hit_result == INVALID_HIT_RESULT) {
+                shared_hit_result = 0;
+            }
+            if (UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+
+            if (Logf("[Keeper %d] gathers the missed ball.\n", pcb->player_id) != 0) {
+                return nullptr;
+            }
+
+            if (SignalChecked(&batsman_cond, "pthread_cond_signal(batsman_cond) failed") != 0) {
+                return nullptr;
+            }
+            pthread_testcancel();
+            continue;
+        }
+
+        while (!ball_in_air && !match_completed) {
+            const int rc = pthread_cond_wait(&fielders_cond, &ball_mutex);
+            if (rc != 0) {
+                errno = rc;
+                perror("pthread_cond_wait(fielders_cond, ball_mutex) failed");
+                UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                return nullptr;
+            }
+        }
+
+        if (match_completed) {
+            UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+            break;
+        }
+
+        const int active_sequence = current_ball_sequence;
+        if (handled_ball_sequence == active_sequence) {
+            UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+            continue;
+        }
+
+        // One awakened fielder claims the ball by clearing in-air state while
+        // holding ball_mutex; followers observe the cleared predicate and sleep.
+        if (!ball_in_air) {
+            UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+            continue;
+        }
+
+        handled_ball_sequence = active_sequence;
+        ball_in_air = false;
+        is_ball_in_air = false;
+
+        const int roll = field_roll(rng);
+        int local_result = 1;
+        if (roll <= 40) {
+            local_result = 1;
+        } else if (roll <= 70) {
+            local_result = 2;
+        } else if (roll <= 85) {
+            local_result = 4;
+        } else if (roll <= 90) {
+            local_result = 6;
+        } else {
+            local_result = -1;
+        }
+
+        shared_hit_result = local_result;
+
+        if (UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        if (local_result == -1) {
+            if (Logf("[Fielder %d] takes the catch.\n", pcb->player_id) != 0) {
+                return nullptr;
+            }
+        } else {
+            if (Logf("[Fielder %d] fields cleanly, result=%d runs.\n", pcb->player_id, local_result) != 0) {
+                return nullptr;
+            }
+        }
+
+        if (SignalChecked(&batsman_cond, "pthread_cond_signal(batsman_cond) failed") != 0) {
+            return nullptr;
+        }
+
+        pthread_testcancel();
+    }
+
+    return nullptr;
+}
+
+void* batsman_routine(void* arg) {
+    auto* pcb = static_cast<PlayerControlBlock*>(arg);
+    if (pcb == nullptr) {
+        perror("batsman_routine received null PlayerControlBlock");
+        return nullptr;
+    }
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
+
+    thread_local std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> shot_dist(1, 100);
+    std::uniform_int_distribution<int> deadlock_dist(1, 100);
+
+    while (!MatchOver() && pcb->is_active_on_pitch) {
+        pthread_testcancel();
+
+        if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+        const bool is_striker = (pcb->player_id == active_striker_id);
+        const bool should_run_exchange = run_exchange_requested && (pcb->player_id == non_striker_id);
+        const int completed_deliveries = (g_match_context.current_over * 6) + g_match_context.balls_in_current_over;
+        if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        if (!is_striker && !should_run_exchange) {
+            std::this_thread::yield();
+            usleep(2000);
+            continue;
+        }
+
+        if (is_striker && pcb->last_ball_faced == completed_deliveries) {
+            std::this_thread::yield();
+            usleep(1500);
+            continue;
+        }
+
+        if (is_striker) {
+            pcb->last_ball_faced = completed_deliveries;
+        }
+
+        if (should_run_exchange) {
+            // Deterministic stability mode: non-striker exchange is acknowledged
+            // but no longer blocks on additional lock choreography.
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            run_exchange_requested = false;
+            force_deadlock_exchange = false;
+            if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            continue;
+        }
+
+        const int shot = shot_dist(rng);
+
+        // Updated probabilities:
+        // 1-63  : clean hit (63%)
+        // 64-88 : safe miss (25%)
+        // 89-98 : clean bowled (10%)
+        // 99-100: byes scenario (2%)
+        if (shot <= 63) {
+            if (Logf("[Batsman %d] clean hit into the outfield.\n", pcb->player_id) != 0) {
+                return nullptr;
+            }
+
+            if (LockChecked(&ball_mutex, "pthread_mutex_lock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+            shared_hit_result = INVALID_HIT_RESULT;
+            ++current_ball_sequence;
+            is_ball_in_air = true;
+            ball_in_air = true;
+            if (BroadcastChecked(&fielders_cond, "pthread_cond_broadcast(fielders_cond) failed") != 0) {
+                UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                return nullptr;
+            }
+
+            while (shared_hit_result == INVALID_HIT_RESULT) {
+                timespec ts{};
+                clock_gettime(CLOCK_REALTIME, &ts);
+                ts.tv_nsec += 200 * 1000 * 1000;  // 200 ms timeout
+                if (ts.tv_nsec >= 1000000000L) {
+                    ts.tv_sec += 1;
+                    ts.tv_nsec -= 1000000000L;
+                }
+
+                const int rc = pthread_cond_timedwait(&batsman_cond, &ball_mutex, &ts);
+                if (rc == ETIMEDOUT) {
+                    // Fallback progress path: treat as dot ball if no fielder
+                    // resolution arrived in time.
+                    shared_hit_result = 0;
+                    if (Logf("[UmpireSignal] Fielding timeout fallback applied for striker %d.\n", pcb->player_id) != 0) {
+                        UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                        return nullptr;
+                    }
+                    break;
+                }
+
+                if (rc != 0) {
+                    errno = rc;
+                    perror("pthread_cond_wait(batsman_cond, ball_mutex) failed");
+                    UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                    return nullptr;
+                }
+            }
+            const int result = shared_hit_result;
+            if (UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+
+            if (result == -1) {
+                if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                    return nullptr;
+                }
+                ++g_match_context.total_wickets;
+                --active_batsmen_count;
+                pcb->is_active_on_pitch = false;
+                if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+                    return nullptr;
+                }
+
+                if (Logf("[Batsman %d] out caught.\n", pcb->player_id) != 0) {
+                    return nullptr;
+                }
+
+                if (SignalChecked(&umpire_cond, "pthread_cond_signal(umpire_cond) failed") != 0) {
+                    return nullptr;
+                }
+                break;
+            }
+
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            g_match_context.global_score += result;
+            run_exchange_requested = false;
+            force_deadlock_exchange = (deadlock_dist(rng) <= 10);
+            if ((result % 2) == 1) {
+                SwapStrikeUnsafe();
+                if (Logf("[UmpireSignal] Strike changed after odd run. New striker=%d\n", active_striker_id) != 0) {
+                    return nullptr;
+                }
+            }
+            if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+
+            if (force_deadlock_exchange) {
+                if (Logf("[Batsman %d] hesitation at crease: forced deadlock scenario triggered.\n", pcb->player_id) != 0) {
+                    return nullptr;
+                }
+                if (LockChecked(&end1_mutex, "pthread_mutex_lock(end1_mutex) failed") != 0) {
+                    return nullptr;
+                }
+                MarkEndOwner(1, pthread_self());
+                LogGanttEvent(pthread_self(), "Batsman", "Acquired", "end1_mutex");
+
+                waiting_for_end2 = pthread_self();
+                // Simulated hesitation window for circular-wait detection.
+                usleep(50000);
+                waiting_for_end2 = static_cast<pthread_t>(0);
+                LogGanttEvent(pthread_self(), "Batsman", "Released", "end1_mutex");
+                UnlockChecked(&end1_mutex, "pthread_mutex_unlock(end1_mutex) failed");
+                ClearEndOwner(1);
+            } else {
+                if (LockChecked(&end1_mutex, "pthread_mutex_lock(end1_mutex) failed") != 0) {
+                    return nullptr;
+                }
+                MarkEndOwner(1, pthread_self());
+                LogGanttEvent(pthread_self(), "Batsman", "Acquired", "end1_mutex");
+                LogGanttEvent(pthread_self(), "Batsman", "Released", "end1_mutex");
+                if (UnlockChecked(&end1_mutex, "pthread_mutex_unlock(end1_mutex) failed") != 0) {
+                    return nullptr;
+                }
+                ClearEndOwner(1);
+
+                if (LockChecked(&end2_mutex, "pthread_mutex_lock(end2_mutex) failed") != 0) {
+                    return nullptr;
+                }
+                MarkEndOwner(2, pthread_self());
+                LogGanttEvent(pthread_self(), "Batsman", "Acquired", "end2_mutex");
+                LogGanttEvent(pthread_self(), "Batsman", "Released", "end2_mutex");
+                if (UnlockChecked(&end2_mutex, "pthread_mutex_unlock(end2_mutex) failed") != 0) {
+                    return nullptr;
+                }
+                ClearEndOwner(2);
+            }
+        } else if (shot <= 88) {
+            if (Logf("[Batsman %d] safe miss, keeper to collect.\n", pcb->player_id) != 0) {
+                return nullptr;
+            }
+
+            if (LockChecked(&ball_mutex, "pthread_mutex_lock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+            keeper_event_pending = true;
+            shared_hit_result = INVALID_HIT_RESULT;
+
+            if (SignalChecked(&keeper_cond, "pthread_cond_signal(keeper_cond) failed") != 0) {
+                UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                return nullptr;
+            }
+
+            while (shared_hit_result == INVALID_HIT_RESULT) {
+                timespec ts{};
+                clock_gettime(CLOCK_REALTIME, &ts);
+                ts.tv_nsec += 200 * 1000 * 1000;
+                if (ts.tv_nsec >= 1000000000L) {
+                    ts.tv_sec += 1;
+                    ts.tv_nsec -= 1000000000L;
+                }
+
+                const int rc = pthread_cond_timedwait(&batsman_cond, &ball_mutex, &ts);
+                if (rc == ETIMEDOUT) {
+                    shared_hit_result = 0;
+                    break;
+                }
+                if (rc != 0) {
+                    errno = rc;
+                    perror("pthread_cond_timedwait(batsman_cond, ball_mutex) failed");
+                    UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                    return nullptr;
+                }
+            }
+
+            if (UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+        } else if (shot <= 98) {
+            if (Logf("[Batsman %d] clean bowled.\n", pcb->player_id) != 0) {
+                return nullptr;
+            }
+
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            ++g_match_context.total_wickets;
+            --active_batsmen_count;
+            pcb->is_active_on_pitch = false;
+            if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+
+            if (SignalChecked(&umpire_cond, "pthread_cond_signal(umpire_cond) failed") != 0) {
+                return nullptr;
+            }
+            break;
+        } else {
+            if (Logf("[Batsman %d] both miss, byes scenario.\n", pcb->player_id) != 0) {
+                return nullptr;
+            }
+
+            if (LockChecked(&ball_mutex, "pthread_mutex_lock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+            keeper_event_pending = true;
+            shared_hit_result = 1;
+
+            if (SignalChecked(&keeper_cond, "pthread_cond_signal(keeper_cond) failed") != 0) {
+                UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                return nullptr;
+            }
+
+            while (shared_hit_result == INVALID_HIT_RESULT) {
+                timespec ts{};
+                clock_gettime(CLOCK_REALTIME, &ts);
+                ts.tv_nsec += 200 * 1000 * 1000;
+                if (ts.tv_nsec >= 1000000000L) {
+                    ts.tv_sec += 1;
+                    ts.tv_nsec -= 1000000000L;
+                }
+
+                const int rc = pthread_cond_timedwait(&batsman_cond, &ball_mutex, &ts);
+                if (rc == ETIMEDOUT) {
+                    break;
+                }
+                if (rc != 0) {
+                    errno = rc;
+                    perror("pthread_cond_timedwait(batsman_cond, ball_mutex) failed");
+                    UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed");
+                    return nullptr;
+                }
+            }
+
+            if (UnlockChecked(&ball_mutex, "pthread_mutex_unlock(ball_mutex) failed") != 0) {
+                return nullptr;
+            }
+
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            g_match_context.global_score += 1;
+            SwapStrikeUnsafe();
+            if (Logf("[UmpireSignal] Strike changed on bye. New striker=%d\n", active_striker_id) != 0) {
+                UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+                return nullptr;
+            }
+            if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+        }
+
+        if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+        ++g_match_context.balls_in_current_over;
+        if (UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        usleep(4000);
+    }
+
+    sem_post(&crease_semaphore);
+    return nullptr;
+}
+
+void* umpire_routine(void* arg) {
+    (void)arg;
+
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
+
+    int last_progress_delivery = -1;
+    double last_progress_timestamp_ms = get_timestamp();
+    int consecutive_stall_recoveries = 0;
+
+    while (true) {
+        bool emit_intensity_warning = false;
+        bool emit_stall_recovery = false;
+
+        if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+
+        const int total_deliveries = (g_match_context.current_over * 6) + g_match_context.balls_in_current_over;
+        if (total_deliveries >= 114 && !match_intensity_high) {
+            match_intensity_high = true;
+            emit_intensity_warning = true;
+        }
+
+        const double now_ms = get_timestamp();
+        if (total_deliveries != last_progress_delivery) {
+            last_progress_delivery = total_deliveries;
+            last_progress_timestamp_ms = now_ms;
+            consecutive_stall_recoveries = 0;
+        } else if ((now_ms - last_progress_timestamp_ms) > 1200.0) {
+            // Recovery from stale striker/deadlock metadata that can freeze
+            // progress after cancellations or hesitation branches.
+            run_exchange_requested = false;
+            force_deadlock_exchange = false;
+            waiting_for_end1 = static_cast<pthread_t>(0);
+            waiting_for_end2 = static_cast<pthread_t>(0);
+            end1_owner = static_cast<pthread_t>(0);
+            end2_owner = static_cast<pthread_t>(0);
+
+            if ((active_striker_pcb == nullptr || !active_striker_pcb->is_active_on_pitch) &&
+                active_non_striker_pcb != nullptr && active_non_striker_pcb->is_active_on_pitch) {
+                active_striker_pcb = active_non_striker_pcb;
+                active_striker_id = active_non_striker_pcb->player_id;
+            }
+
+            emit_stall_recovery = true;
+            last_progress_timestamp_ms = now_ms;
+            ++consecutive_stall_recoveries;
+
+            if (consecutive_stall_recoveries >= 8) {
+                match_completed = true;
+            }
+        }
+
+        const bool no_active_striker =
+            (active_striker_pcb == nullptr || !active_striker_pcb->is_active_on_pitch);
+        const bool no_active_non_striker =
+            (active_non_striker_pcb == nullptr || !active_non_striker_pcb->is_active_on_pitch);
+        const bool no_batsmen_left = (pavilion_size <= 0) && no_active_striker && no_active_non_striker;
+
+        const bool match_over =
+            (g_match_context.current_over >= 20 || g_match_context.total_wickets >= 10 || no_batsmen_left);
+        if (match_over) {
+            if (no_batsmen_left && g_match_context.total_wickets < 10) {
+                g_match_context.total_wickets = 10;
+            }
+            match_completed = true;
+            UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+            if (no_batsmen_left) {
+                if (LockChecked(&log_mutex, "pthread_mutex_lock(log_mutex) failed") == 0) {
+                    std::puts("[Umpire] Innings terminated: no batsmen left to continue.");
+                    std::fflush(stdout);
+                    UnlockChecked(&log_mutex, "pthread_mutex_unlock(log_mutex) failed");
+                }
+            }
+            BroadcastChecked(&fielders_cond, "pthread_cond_broadcast(fielders_cond) failed");
+            BroadcastChecked(&keeper_cond, "pthread_cond_broadcast(keeper_cond) failed");
+            BroadcastChecked(&batsman_cond, "pthread_cond_broadcast(batsman_cond) failed");
+            BroadcastChecked(&bowler_manager_cond, "pthread_cond_broadcast(bowler_manager_cond) failed");
+            SignalChecked(&umpire_cond, "pthread_cond_signal(umpire_cond) failed");
+            break;
+        }
+
+        const int wickets_snapshot = g_match_context.total_wickets;
+        const int balls_snapshot = g_match_context.balls_in_current_over;
+        UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+
+        if (emit_intensity_warning) {
+            if (LockChecked(&log_mutex, "pthread_mutex_lock(log_mutex) failed") != 0) {
+                return nullptr;
+            }
+            std::puts("[Umpire] Match Intensity High: Death Over Phase Initiated");
+            std::fflush(stdout);
+            if (UnlockChecked(&log_mutex, "pthread_mutex_unlock(log_mutex) failed") != 0) {
+                return nullptr;
+            }
+        }
+
+        if (emit_stall_recovery) {
+            if (LockChecked(&log_mutex, "pthread_mutex_lock(log_mutex) failed") != 0) {
+                return nullptr;
+            }
+            std::puts("[Umpire] Stall recovery: striker/exchange state reset.");
+            std::fflush(stdout);
+            if (UnlockChecked(&log_mutex, "pthread_mutex_unlock(log_mutex) failed") != 0) {
+                return nullptr;
+            }
+            BroadcastChecked(&batsman_cond, "pthread_cond_broadcast(batsman_cond) failed");
+            BroadcastChecked(&fielders_cond, "pthread_cond_broadcast(fielders_cond) failed");
+            BroadcastChecked(&keeper_cond, "pthread_cond_broadcast(keeper_cond) failed");
+        }
+
+        // Deadlock detection over run-end resource graph.
+        pthread_t wait_end1 = waiting_for_end1;
+        pthread_t wait_end2 = waiting_for_end2;
+        pthread_t owner1 = end1_owner;
+        pthread_t owner2 = end2_owner;
+
+        const bool circular_wait = (wait_end1 != static_cast<pthread_t>(0) &&
+                                    wait_end2 != static_cast<pthread_t>(0) &&
+                                    owner1 != static_cast<pthread_t>(0) &&
+                                    owner2 != static_cast<pthread_t>(0) &&
+                                    pthread_equal(wait_end2, owner1) != 0 &&
+                                    pthread_equal(wait_end1, owner2) != 0);
+
+        if (circular_wait) {
+            if (Logf("[Umpire] Deadlock Detected: Run-Out!\n", -1) != 0) {
+                return nullptr;
+            }
+
+            PlayerControlBlock* victim = active_non_striker_pcb;
+            if (victim != nullptr) {
+                const int cancel_rc = pthread_cancel(victim->thread_id);
+                if (cancel_rc != 0) {
+                    errno = cancel_rc;
+                    perror("pthread_cancel(non-striker) failed");
+                }
+            }
+
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            ++g_match_context.total_wickets;
+            if (active_batsmen_count > 0) {
+                --active_batsmen_count;
+            }
+            waiting_for_end1 = static_cast<pthread_t>(0);
+            waiting_for_end2 = static_cast<pthread_t>(0);
+            UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+            SignalChecked(&umpire_cond, "pthread_cond_signal(umpire_cond) failed");
+        }
+
+        // Over management with six-ball quantum and striker context switch.
+        if (balls_snapshot >= 6) {
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            g_match_context.balls_in_current_over = 0;
+            ++g_match_context.current_over;
+
+            const int previous_striker = active_striker_id;
+            active_striker_id = non_striker_id;
+            non_striker_id = previous_striker;
+            PlayerControlBlock* tmp = active_striker_pcb;
+            active_striker_pcb = active_non_striker_pcb;
+            active_non_striker_pcb = tmp;
+            over_change_requested = true;
+            UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+
+            if (Logf("[Umpire] Over complete: context switch striker end.\n", -1) != 0) {
+                return nullptr;
+            }
+            SignalChecked(&bowler_manager_cond, "pthread_cond_signal(bowler_manager_cond) failed");
+        }
+
+        // SJF pavilion scheduling for batsman substitution after wickets.
+        if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+            return nullptr;
+        }
+        const bool need_substitution = (active_batsmen_count < 2 && pavilion_size > 0 && g_match_context.total_wickets < 10);
+        UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+
+        if (need_substitution) {
+            PlayerControlBlock* next_batsman = nullptr;
+
+            if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                return nullptr;
+            }
+            int selected_index = 0;
+            bool specialist_selected = false;
+
+            if (use_priority_scheduling && match_intensity_high) {
+                for (int i = 0; i < pavilion_size; ++i) {
+                    if (pavilion_queue[i] != nullptr && pavilion_queue[i]->is_death_over_specialist) {
+                        selected_index = i;
+                        specialist_selected = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!specialist_selected && use_sjf_scheduling) {
+                int best_duration = (pavilion_size > 0 && pavilion_queue[0] != nullptr)
+                                        ? pavilion_queue[0]->expected_stay_duration
+                                        : 0;
+                for (int i = 1; i < pavilion_size; ++i) {
+                    if (pavilion_queue[i] != nullptr && pavilion_queue[i]->expected_stay_duration < best_duration) {
+                        best_duration = pavilion_queue[i]->expected_stay_duration;
+                        selected_index = i;
+                    }
+                }
+            }
+
+            if (pavilion_size > 0) {
+                next_batsman = pavilion_queue[selected_index];
+                for (int i = selected_index + 1; i < pavilion_size; ++i) {
+                    pavilion_queue[i - 1] = pavilion_queue[i];
+                }
+                pavilion_queue[pavilion_size - 1] = nullptr;
+                --pavilion_size;
+            }
+            UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+
+            if (next_batsman != nullptr) {
+                if (sem_wait(&crease_semaphore) != 0) {
+                    perror("sem_wait(crease_semaphore) failed");
+                    return nullptr;
+                }
+
+                next_batsman->is_active_on_pitch = true;
+                next_batsman->is_waiting_in_pavilion = false;
+                next_batsman->dispatch_time = get_timestamp();
+
+                const double wait_time_ms = next_batsman->dispatch_time - next_batsman->arrival_time;
+                if (LockChecked(&file_mutex, "pthread_mutex_lock(file_mutex) failed") != 0) {
+                    sem_post(&crease_semaphore);
+                    return nullptr;
+                }
+                if (wait_time_log_file.is_open()) {
+                    const char* algo_name = use_sjf_scheduling ? "SJF" : "FCFS";
+                    const int roster_index = next_batsman->player_id + 1;
+                    const int is_middle_order = (roster_index >= 3 && roster_index <= 7) ? 1 : 0;
+                    wait_time_log_file << algo_name << ','
+                                       << next_batsman->player_id << ','
+                                       << "Batsman" << ','
+                                       << next_batsman->expected_stay_duration << ','
+                                       << wait_time_ms << ','
+                                       << roster_index << ','
+                                       << is_middle_order << '\n';
+                    wait_time_log_file.flush();
+                }
+                UnlockChecked(&file_mutex, "pthread_mutex_unlock(file_mutex) failed");
+
+                const int rc = pthread_create(&next_batsman->thread_id, nullptr, batsman_routine, next_batsman);
+                if (rc != 0) {
+                    errno = rc;
+                    perror("pthread_create(next batsman) failed");
+                    sem_post(&crease_semaphore);
+                } else {
+                    if (LockChecked(&score_mutex, "pthread_mutex_lock(score_mutex) failed") != 0) {
+                        return nullptr;
+                    }
+                    if (active_striker_pcb == nullptr || !active_striker_pcb->is_active_on_pitch) {
+                        active_striker_pcb = next_batsman;
+                        active_striker_id = next_batsman->player_id;
+                    } else {
+                        active_non_striker_pcb = next_batsman;
+                        non_striker_id = next_batsman->player_id;
+                    }
+                    ++active_batsmen_count;
+                    UnlockChecked(&score_mutex, "pthread_mutex_unlock(score_mutex) failed");
+
+                    if (Logf("[Umpire] SJF selected batsman %d from pavilion.\n", next_batsman->player_id) != 0) {
+                        return nullptr;
+                    }
+                }
+            }
+        }
+
+        if (wickets_snapshot != 0) {
+            SignalChecked(&umpire_cond, "pthread_cond_signal(umpire_cond) failed");
+        }
+
+        usleep(5000);
+        pthread_testcancel();
+    }
+
+    return nullptr;
+}
