@@ -169,10 +169,10 @@ void* umpire_routine(void* arg) {
             // Swap strike at end of over (non-striker becomes striker for next over)
             SwapStrikeUnsafe();// This simulates the real cricket rule where the strike rotates at the end of each over
 
-            // Check death overs 16th over
-            // Ball 90 = over 15 completed → overs 16-20 are "death overs" (high intensity)
+            // Check death overs — last 2 overs
+            // Ball 108 = over 18 completed → overs 19-20 are "death overs" (high intensity)
             int total_del = ov * BALLS_PER_OVER;
-            if (total_del >= 90 && !match_intensity_high) {
+            if (total_del >= 108 && !match_intensity_high) {
                 match_intensity_high = true;
                 Log("  *** [Umpire] DEATH OVERS! Intensity HIGH! ***\n");
             }
