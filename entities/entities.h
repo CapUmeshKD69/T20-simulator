@@ -4,9 +4,7 @@
 #include <pthread.h>
 #include "../globals.h"
 
-/* *--------------------------------------------------------
- * Thread Entry Points
- * ---------------------------------------------------------
+/* 
  * These functions serve as the execution starting points for 
  * the POSIX threads (pthreads) in the simulation.
  *

@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <unistd.h>
 
-// ═══════════════════════════════════════════════════
 //  UMPIRE ROUTINE
 //
 //  Manages:
@@ -13,7 +12,6 @@
 //    - Run exchange resolution (deadlock detection)
 //    - Wicket → bring in next batsman from pavilion (SJF)
 //    - Match termination
-// ═══════════════════════════════════════════════════
 //
 
 //  The umpire is the central coordinator of the match.
@@ -25,7 +23,7 @@
 //    - Declaring the match over and waking all threads to exit
 //
 //  WHY POLLING (not event-driven)?
-//  Multiple events can fire in rapid succession (e.g. wicket + over end).
+//  Multiple events can fire in rapid succession like wicket + over completion
 //  A polling loop is simpler and avoids complex multi-condition signaling.
 //  The 3ms sleep keeps CPU usage low while staying responsive.
 void* umpire_routine(void* arg) {
@@ -35,7 +33,7 @@ void* umpire_routine(void* arg) {
         usleep(3000);  // poll every 3ms — short enough to react quickly, avoids busy-waiting
 
         // ── Check match termination ──────────────────
-        LockChecked(&score_mutex, "score_mutex lock (umpire)");
+        LockChecked(&score_mutex, "score_mutex lock (umpire)");  // lock score_mutex to check match state for termination conditions
         bool over = (g_match_context.current_over >= MAX_OVERS ||
                      g_match_context.total_wickets >= MAX_WICKETS ||
                      match_completed);
@@ -48,15 +46,15 @@ void* umpire_routine(void* arg) {
                 g_match_context.total_wickets = MAX_WICKETS;
         }
 
-        if (over) {
+        if (over) { // if any termination condition met, set match_completed=true and log final score, then break loop to end umpire thread
             match_completed = true;
             int score = g_match_context.global_score;
             int wkts  = g_match_context.total_wickets;
             int ov    = g_match_context.current_over;
             int bl    = g_match_context.balls_in_current_over;
-            UnlockChecked(&score_mutex, "score_mutex unlock (umpire end)");
+            UnlockChecked(&score_mutex, "score_mutex unlock (umpire end)"); // unlock score_mutex before logging and broadcasting to allow other threads to read final state
 
-            Logf3("\n  === [Umpire] MATCH OVER! Score: %d/%d in %d", score, wkts, ov);
+            Logf3("\n  [Umpire] MATCH OVER! Score: %d/%d in %d", score, wkts, ov);
             Logf(".%d overs\n", bl);
 
             // Wake everyone up so they can exit
@@ -71,7 +69,7 @@ void* umpire_routine(void* arg) {
             break;
         }
 
-        // ── Run exchange resolution ──────────────────
+        // ── Run exchange resolution ─────
         // When the striker hits 1 or 3 runs, both batsmen race to the other crease.
         // Each batsman thread reports its result (crease_done + let_go flags).
         // The umpire waits until BOTH have reported, then decides the outcome.
@@ -87,20 +85,20 @@ void* umpire_routine(void* arg) {
 
             // Auto-resolve if a batsman is no longer on the pitch
             // This can happen if the batsman was dismissed before the exchange completed
-            if (s_done && !n_done &&
+            if (s_done && !n_done && //if striker reported but non-striker didn't and non-striker is not active on pitch, we assume non-striker failed to make the crease
                 (!active_non_striker_pcb || !active_non_striker_pcb->is_active_on_pitch)) {
                 non_striker_crease_done = true;
                 non_striker_let_go = true;
                 n_done = true;
             }
-            if (!s_done && n_done &&
+            if (!s_done && n_done && // if non-striker reported but striker didn't and striker is not active on pitch, we assume striker failed to make the crease
                 (!active_striker_pcb || !active_striker_pcb->is_active_on_pitch)) {
                 striker_crease_done = true;
                 striker_let_go = true;
                 s_done = true;
             }
 
-            if (s_done && n_done) {
+            if (s_done && n_done) { 
                 // Both batsmen have reported; umpire makes the final call
                 bool s_let = striker_let_go;
                 bool n_let = non_striker_let_go;
@@ -163,13 +161,13 @@ void* umpire_routine(void* arg) {
         // Checks if 6 balls have been bowled this over; if so, closes the over and
         // signals the bowler_manager to swap in the next bowler
         int balls = g_match_context.balls_in_current_over;
-        if (balls >= BALLS_PER_OVER) {
+        if (balls >= BALLS_PER_OVER) { // if 6 or more balls have been bowled in the current over, we need to end the over and rotate strike
             g_match_context.balls_in_current_over = 0;
-            ++g_match_context.current_over;
+            ++g_match_context.current_over;// Increment the over count and reset the ball count for the new over
             int ov = g_match_context.current_over;
 
             // Swap strike at end of over (non-striker becomes striker for next over)
-            SwapStrikeUnsafe();
+            SwapStrikeUnsafe();// This simulates the real cricket rule where the strike rotates at the end of each over
 
             // Check death overs 16th over
             // Ball 90 = over 15 completed → overs 16-20 are "death overs" (high intensity)
@@ -182,7 +180,7 @@ void* umpire_routine(void* arg) {
             over_change_requested = true;  // tells bowler_manager to retire current bowler and spawn next
             UnlockChecked(&score_mutex, "score_mutex unlock (over)");
 
-            Logf("  [Umpire] END OF OVER %d. Strike rotated.\n", ov);
+            Logf("  [Umpire] END OF OVER %d. Strike rotated.\n", ov); 
             LogS("  -> Striker is now %s\n", active_striker_pcb ? active_striker_pcb->name : "?");
             SignalChecked(&bowler_manager_cond, "bowler_manager_cond (over)");
 
@@ -200,12 +198,12 @@ void* umpire_routine(void* arg) {
         // Uses SJF (Shortest Job First) scheduling to pick the next batsman,
         // simulating how a captain sends in batsmen based on match situation.
         bool need_sub = (wicket_fell && active_batsmen_count < 2 && pavilion_size > 0 &&
-                         g_match_context.total_wickets < MAX_WICKETS);
-        if (need_sub) {
+                         g_match_context.total_wickets < MAX_WICKETS); // if a wicket has fallen and we have less than 2 active batsmen and there are players waiting in the pavilion and we haven't reached max wickets, then we need to bring in a new batsman
+        if (need_sub) {  // if we need to bring in a new batsman from the pavilion, we will select one based on scheduling criteria (SJF or priority), then create a thread for that batsman and assign them to the striker or non-striker position as needed
             wicket_fell = false;
 
             // SJF / Priority scheduling for next batsman
-            int sel = 0;
+            int sel = 0; // sel is the index of the selected batsman in the pavilion queue
             bool specialist = false;
 
             if (use_priority_scheduling && match_intensity_high) {
@@ -219,7 +217,7 @@ void* umpire_routine(void* arg) {
                 }
             }
 
-            if (!specialist && use_sjf_scheduling) {
+            if (!specialist && use_sjf_scheduling) { // If no specialist selected (or not using priority scheduling), use SJF to pick the batsman with the lowest expected_stay_duration (burst time analog)
                 // SJF: pick the batsman with the lowest expected_stay_duration (burst time analog)
                 // This minimises average waiting time in the pavilion queue
                 int best = pavilion_queue[0] ? pavilion_queue[0]->expected_stay_duration : 999;
@@ -232,22 +230,22 @@ void* umpire_routine(void* arg) {
             }
 
             // Remove selected batsman from the pavilion queue and compact the array
-            PlayerControlBlock* next = pavilion_queue[sel];
-            for (int i = sel + 1; i < pavilion_size; ++i)
+            PlayerControlBlock* next = pavilion_queue[sel]; // next is the PCB of the selected batsman who will come in to replace the dismissed batsman
+            for (int i = sel + 1; i < pavilion_size; ++i) // shift all batsmen after the selected one forward in the queue to fill the gap
                 pavilion_queue[i - 1] = pavilion_queue[i];
             pavilion_queue[--pavilion_size] = nullptr;
             UnlockChecked(&score_mutex, "score_mutex unlock (sub)");
 
             if (next) {
                 psem_wait(&crease_semaphore);  // acquire crease slot before putting batsman on pitch (max 2 at a time)
-                next->is_active_on_pitch    = true;
-                next->is_waiting_in_pavilion = false;
-                next->dispatch_time = get_timestamp();
+                next->is_active_on_pitch    = true; // mark the selected batsman as active on the pitch so that other threads know they are now playing
+                next->is_waiting_in_pavilion = false; // mark the selected batsman as no longer waiting in the pavilion
+                next->dispatch_time = get_timestamp();// record the time when the batsman is dispatched to the pitch for wait time calculation
                 double wait_ms = next->dispatch_time - next->arrival_time;  // total pavilion wait time in ms
 
                 // Log wait time to CSV for scheduling analysis
                 // Columns: Algorithm, ThreadID, Role, ExpectedDuration, WaitTimeMs, RosterIndex, IsMiddleOrder
-                LockChecked(&file_mutex, "file_mutex lock (wait csv)");
+                LockChecked(&file_mutex, "file_mutex lock (wait csv)"); // lock file_mutex to safely write to the wait time log CSV file
                 if (wait_time_log_file.is_open()) {
                     const char* algo = use_sjf_scheduling ? "SJF" : "FCFS";
                     int ri = next->player_id + 1;           // 1-based roster index for readability
@@ -257,7 +255,7 @@ void* umpire_routine(void* arg) {
                                        << ri << ',' << mo << '\n';
                     wait_time_log_file.flush();
                 }
-                UnlockChecked(&file_mutex, "file_mutex unlock (wait csv)");
+                UnlockChecked(&file_mutex, "file_mutex unlock (wait csv)"); // unlock file_mutex after writing to allow other threads to log
 
                 int rc = pthread_create(&next->thread_id, nullptr, batsman_routine, next);
                 if (rc != 0) {

@@ -5,29 +5,27 @@
 #include <cstdio>
 #include <functional>
 using namespace std;
-
-// ── Mutex / Condvar wrappers ─────────────────────────────────────────────────
 // These are thin wrappers around the raw pthread functions.
 // They print an error message to stderr if the operation fails, making
 // locking bugs much easier to spot without cluttering every call site
 // with error-checking boilerplate.
 
-int LockChecked(pthread_mutex_t* m, const char* name) {
+int LockChecked(pthread_mutex_t* m, const char* name) { // wrapper for pthread_mutex_lock that checks the return code and prints an error message if it fails
     int rc = pthread_mutex_lock(m);
     if (rc != 0) { errno = rc; perror(name); }
     return rc;
 }
-int UnlockChecked(pthread_mutex_t* m, const char* name) {
+int UnlockChecked(pthread_mutex_t* m, const char* name) { // wrapper for pthread_mutex_unlock that checks the return code and prints an error message if it fails
     int rc = pthread_mutex_unlock(m);
     if (rc != 0) { errno = rc; perror(name); }
     return rc;
 }
-int SignalChecked(pthread_cond_t* c, const char* name) {
+int SignalChecked(pthread_cond_t* c, const char* name) { // wrapper for pthread_cond_signal that checks the return code and prints an error message if it fails
     int rc = pthread_cond_signal(c);  // wakes exactly one thread waiting on this condition
     if (rc != 0) { errno = rc; perror(name); }
     return rc;
 }
-int BroadcastChecked(pthread_cond_t* c, const char* name) {
+int BroadcastChecked(pthread_cond_t* c, const char* name) { // wrapper for pthread_cond_broadcast that checks the return code and prints an error message if it fails
     int rc = pthread_cond_broadcast(c);  // wakes ALL threads waiting on this condition
     if (rc != 0) { errno = rc; perror(name); }
     return rc;
@@ -38,28 +36,28 @@ int BroadcastChecked(pthread_cond_t* c, const char* name) {
 // Without this, output from concurrent threads would interleave and become unreadable.
 // Use the variant that matches the number and type of arguments you want to print.
 
-void Log(const char* msg) {
+void Log(const char* msg) { // simple log function for static messages with no formatting, it locks the log_mutex to ensure that the message is printed atomically without interleaving with other threads' output, it also flushes stdout to ensure timely display of logs
     LockChecked(&log_mutex, "log_mutex lock");
     fputs(msg, stdout);
     fflush(stdout);
     UnlockChecked(&log_mutex, "log_mutex unlock");
 }
 
-void Logf(const char* fmt, int a) {
+void Logf(const char* fmt, int a) { // log function for a single integer argument, locks log_mutex to ensure atomic printing , used for logging runs scored and wickets in the commentary
     LockChecked(&log_mutex, "log_mutex lock");
     printf(fmt, a);
     fflush(stdout);
     UnlockChecked(&log_mutex, "log_mutex unlock");
 }
 
-void Logf2(const char* fmt, int a, int b) {
+void Logf2(const char* fmt, int a, int b) { // log function for two integer arguments, locks log_mutex to ensure atomic printing , used for balls numbers and over numbers in the commentary
     LockChecked(&log_mutex, "log_mutex lock");
     printf(fmt, a, b);
     fflush(stdout);
     UnlockChecked(&log_mutex, "log_mutex unlock");
 }
 
-void Logf3(const char* fmt, int a, int b, int c) {
+void Logf3(const char* fmt, int a, int b, int c) { 
     // Prints a visual separator line before the message to highlight major events
     // (e.g. end of match, over summary) in the output stream
     LockChecked(&log_mutex, "log_mutex lock");
@@ -69,7 +67,7 @@ void Logf3(const char* fmt, int a, int b, int c) {
     UnlockChecked(&log_mutex, "log_mutex unlock");
 }
 
-void LogS(const char* fmt, const char* s) {
+void LogS(const char* fmt, const char* s) { // log function for a single string argument, locks log_mutex to ensure atomic printing , used for logging player names in the commentary
     LockChecked(&log_mutex, "log_mutex lock");
     printf(fmt, s);
     fflush(stdout);

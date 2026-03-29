@@ -47,7 +47,7 @@ inline int psem_destroy(PthreadSemaphore* s) {
 //  Constants
 constexpr int TEAM_SIZE         = 11;
 constexpr int BOWLER_POOL_SIZE  = 5;
-constexpr int INVALID_HIT_RESULT = -1; // used to indicate that no hit from batsman
+constexpr int INVALID_HIT_RESULT = -999; // used to indicate that no hit from batsman
 constexpr int MAX_OVERS         = 20;
 constexpr int MAX_WICKETS       = 10;
 constexpr int BALLS_PER_OVER    = 6;
@@ -59,6 +59,7 @@ struct MatchContext { // define the match context
     int total_wickets;
     int current_over;
     int balls_in_current_over;
+    int total_wides;
 };
 
 enum class PlayerRole { // define the player roles
@@ -95,6 +96,7 @@ struct PlayerControlBlock { // define the player control block
     int total_balls_bowled;
     int runs_conceded;
     int wickets_taken;
+    int wides;
 };
 
 
@@ -130,6 +132,7 @@ extern int  shared_hit_result; // runs scored on the shot
 extern int  current_ball_sequence; // sequence number of the current ball being bowled
 extern int  handled_ball_sequence; // sequence number of the ball for which fielder or keeper has resolved the delivery
 extern bool keeper_event_pending; // true when the keeper needs to process a missed delivery
+extern bool delivery_is_wide;    // true when the bowler bowls a wide
 
 // ----------------------****------------------------
 //  Run exchange / crease deadlock

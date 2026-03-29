@@ -7,14 +7,11 @@
 #include <random>
 #include <unistd.h>
 using namespace std;
-
-// ═══════════════════════════════════════════════════
 //  BATSMAN ROUTINE
 //
 //  The striker waits for delivery_bowled, plays a shot,
 //  waits for fielding resolution, then handles runs/wickets.
 //  The non-striker only activates during run exchanges.
-// ═══════════════════════════════════════════════════
 //
 //  Every batsman (both openers and all incoming batsmen) runs
 //  this exact same function. The thread's behavior at any moment
@@ -32,14 +29,15 @@ void* batsman_routine(void* arg) {
     uniform_int_distribution<int> crease_dist(1, 100); // determines if batsman makes the crease on a run exchange
 
     while (!MatchOver() && pcb->is_active_on_pitch) {
+        bool is_wide = false;  // set later under ball_mutex when consuming a delivery
         // ── Determine role ──────────────────────────
         // Role can change ball-to-ball (e.g. after an odd-run swap or end of over),
         // so we re-read it at the top of every loop iteration under the score_mutex
         LockChecked(&score_mutex, "score_mutex lock (batsman role)");
-        bool is_striker      = (pid == active_striker_id);
-        bool is_non_striker  = (pid == non_striker_id);
+        bool is_striker      = (pid == active_striker_id);// whether this thread is currently the striker
+        bool is_non_striker  = (pid == non_striker_id); // whether this thread is currently the non-striker
         bool exchange_needed = run_exchange_needed;
-        UnlockChecked(&score_mutex, "score_mutex unlock (batsman role)");
+        UnlockChecked(&score_mutex, "score_mutex unlock (batsman role)"); // unlocking score_mutex after reading role and exchange state
 
         // ── NON-STRIKER: participate in run exchange if needed ──
         // The non-striker is dormant most of the time. It only activates when the striker
@@ -47,9 +45,9 @@ void* batsman_routine(void* arg) {
         // This is the run-exchange protocol: both threads race to their crease,
         // report the result, and the umpire adjudicates any run-out.
         if (is_non_striker && exchange_needed) {
-            LockChecked(&score_mutex, "score_mutex lock (ns exchange)");
+            LockChecked(&score_mutex, "score_mutex lock (ns exchange)"); // Check if exchange still needed (could have been resolved while we were waiting for the lock)
             if (!run_exchange_needed || non_striker_crease_done) {
-                // Exchange already resolved or we already reported — skip this iteration
+                // Exchange already resolved or we already reported 
                 UnlockChecked(&score_mutex, "score_mutex unlock (ns exchange)");
                 usleep(2000);
                 continue;
@@ -59,38 +57,38 @@ void* batsman_routine(void* arg) {
 
             // Non-striker tries to reach the other crease
             // 3% chance (roll <= 3) of hesitating and failing → potential run-out
-            int roll = crease_dist(rng);
-            bool let_go = (roll <= 3);
+            int roll = crease_dist(rng);// random roll to determine if non-striker makes the crease
+            bool let_go = (roll <= 3); // if true, non-striker fails to make the crease
 
             if (let_go) {
-                LogS("  WARNING: [%s] (non-striker) hesitates, FAILS to make crease!\n", pcb->name);
+                LogS(" Hesitate :  [%s] (non-striker) hesitates, FAILS to make crease!\n", pcb->name);
             } else {
-                LogS("  OK: [%s] (non-striker) makes it to the other crease.\n", pcb->name);
+                LogS("  SUCCESS: [%s] (non-striker) makes it to the other crease.\n", pcb->name);
             }
 
             // Publish our crease result so the umpire can see both batsmen's outcomes
-            LockChecked(&score_mutex, "score_mutex lock (ns result)");
-            non_striker_let_go = let_go;
+            LockChecked(&score_mutex, "score_mutex lock (ns result)"); // lock score_mutex to update shared state about the run exchange result
+            non_striker_let_go = let_go; // set flag indicating whether non-striker failed to make crease
             non_striker_crease_done = true;  // signals umpire that non-striker has reported
-            UnlockChecked(&score_mutex, "score_mutex unlock (ns result)");
-            BroadcastChecked(&run_exchange_cond, "run_exchange_cond (ns done)");
+            UnlockChecked(&score_mutex, "score_mutex unlock (ns result)"); // unlock score_mutex after updating run exchange result
+            BroadcastChecked(&run_exchange_cond, "run_exchange_cond (ns done)");// wake umpire in case it's waiting for the non-striker's report
 
             // Wait for umpire to resolve
             // Umpire checks both batsmen's flags and decides: full runs / runs-1 / run-out
-            LockChecked(&score_mutex, "score_mutex lock (ns wait resolve)");
+            LockChecked(&score_mutex, "score_mutex lock (ns wait resolve)"); // wait for umpire to adjudicate the run exchange based on the reports from both batsmen
             while (!exchange_resolved && !match_completed) {
                 timespec ts{};
                 clock_gettime(CLOCK_REALTIME, &ts);
                 ts.tv_sec += 2;  // 2s timeout prevents indefinite block if umpire misses the broadcast
                 pthread_cond_timedwait(&run_exchange_cond, &score_mutex, &ts);
             }
-            UnlockChecked(&score_mutex, "score_mutex unlock (ns wait resolve)");
+            UnlockChecked(&score_mutex, "score_mutex unlock (ns wait resolve)"); // after umpire has resolved the exchange, check if non-striker was run out
 
             // If umpire ruled THIS batsman out, release crease slot and exit the thread
-            if (exchange_wicket && exchange_runout_id == pid) {
+            if (exchange_wicket && exchange_runout_id == pid) { // non-striker was run out in the exchange
                 LogS("  OUT: [%s] RUN OUT by umpire decision!\n", pcb->name);
                 strncpy(pcb->how_out, "run out", sizeof(pcb->how_out) - 1);
-                pcb->is_active_on_pitch = false;
+                pcb->is_active_on_pitch = false; // mark this batsman as no longer active on the pitch
                 psem_post(&crease_semaphore);  // frees one crease slot → umpire can send in next batsman
                 return nullptr;
             }
@@ -104,12 +102,10 @@ void* batsman_routine(void* arg) {
             continue;
         }
 
-        // ═══════════════════════════════════════════
-        //  STRIKER: wait for bowler to deliver
-        // ═══════════════════════════════════════════
+         // striker waits for the bowler to bowl the delivery
         // Blocks on delivery_cond, which the bowler broadcasts after setting delivery_bowled=true
-        LockChecked(&ball_mutex, "ball_mutex lock (striker wait delivery)");
-        while (!delivery_bowled && !match_completed) {
+        LockChecked(&ball_mutex, "ball_mutex lock (striker wait delivery)"); // wait for the bowler to signal that the delivery has been bowled
+        while (!delivery_bowled && !match_completed) { // wait until the bowler has bowled the delivery or match is completed
             timespec ts{};
             clock_gettime(CLOCK_REALTIME, &ts);
             ts.tv_nsec += 300L * 1000 * 1000;  // 300ms timeout: re-checks role frequently in case strike rotated
@@ -131,11 +127,37 @@ void* batsman_routine(void* arg) {
             break;
         }
         delivery_bowled = false;  // consume the delivery; bowler will not re-signal until next ball
+        is_wide = delivery_is_wide;            // read wide flag under ball_mutex
+        delivery_is_wide = false;              // consume
         UnlockChecked(&ball_mutex, "ball_mutex unlock (striker got delivery)");
 
+        // ── WIDE BALL: bowler's error, 1 penalty run, not a legal delivery ──
+        if (is_wide) {
+            Log("  WIDE: Wide ball called! +1 run (extras).\n");
+
+            LockChecked(&score_mutex, "score_mutex lock (wide)");
+            g_match_context.global_score += 1;
+            g_match_context.total_wides  += 1;
+            // DO NOT increment balls_in_current_over — wide is not a legal delivery
+            if (current_bowler_pcb) {
+                current_bowler_pcb->runs_conceded += 1;
+                ++current_bowler_pcb->wides;
+            }
+            UnlockChecked(&score_mutex, "score_mutex unlock (wide)");
+
+            // Mark delivery resolved so bowler can re-bowl
+            LockChecked(&ball_mutex, "ball_mutex lock (resolve wide)");
+            delivery_resolved = true;
+            UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve wide)");
+            BroadcastChecked(&resolved_cond, "resolved_cond (wide)");
+            SignalChecked(&umpire_cond, "umpire_cond (wide)");
+
+            continue;  // loop back — batsman didn't face the ball
+        }
+
         {
-            // ── Play the shot ────────────────────────
-            int shot = shot_dist(rng);
+            // striker plays the shot 
+            int shot = shot_dist(rng); // random shot outcome for this delivery
 
             // Probabilities:
             // 1-77  : clean hit (fielders resolve)  (77%)
@@ -149,17 +171,17 @@ void* batsman_routine(void* arg) {
                 LogS("  >> [%s] smashes the ball into the field!\n", pcb->name);
                 ++pcb->balls_faced;
 
-                LockChecked(&ball_mutex, "ball_mutex lock (hit)");
-                shared_hit_result = INVALID_HIT_RESULT;
+                LockChecked(&ball_mutex, "ball_mutex lock (hit)");// set shared state for fielders to resolve this hit
+                shared_hit_result = INVALID_HIT_RESULT; // reset shared variable where the winning fielder will write the result (runs/wicket)
                 ++current_ball_sequence;  // unique sequence number per delivery; fielders check this to avoid double-handling
-                ball_in_air = true;
+                ball_in_air = true; // flag to indicate ball is in the air and needs fielding resolution
                 BroadcastChecked(&fielders_cond, "fielders_cond (hit)");
 
                 // Wait for fielder to resolve
-                // The winning fielder sets shared_hit_result and signals batsman_cond
+                // The winning fielder sets shared_hit_result and signals batsman_cond ,  below we wait for that signal and read the result
                 while (shared_hit_result == INVALID_HIT_RESULT && !match_completed) {
                     timespec ts{};
-                    clock_gettime(CLOCK_REALTIME, &ts);
+                    clock_gettime(CLOCK_REALTIME, &ts); 
                     ts.tv_nsec += 500L * 1000 * 1000;
                     if (ts.tv_nsec >= 1000000000L) { ts.tv_sec++; ts.tv_nsec -= 1000000000L; }
                     int rc = pthread_cond_timedwait(&batsman_cond, &ball_mutex, &ts);
@@ -170,19 +192,19 @@ void* batsman_routine(void* arg) {
                 }
                 int result = shared_hit_result;  // -1=caught, 0=dot, 1/2/3=runs, 4=boundary, 6=six
                 UnlockChecked(&ball_mutex, "ball_mutex unlock (hit resolved)");
-
+                 //  if the result is -1, it means the batsman is caught out by a fielder, we log the event, update the PCB to reflect the how_out status and mark the batsman as inactive
                 if (result == -1) {
                     // ── CAUGHT OUT ────────────────────
                     // Fielder caught the ball cleanly before it bounced → batsman is out
                     LogS("  OUT: [%s] OUT! Caught by fielder!\n", pcb->name);
                     strncpy(pcb->how_out, "Catch OUT!", sizeof(pcb->how_out) - 1);
                     LockChecked(&score_mutex, "score_mutex lock (caught)");
-                    ++g_match_context.total_wickets;
-                    ++g_match_context.balls_in_current_over;
-                    --active_batsmen_count;
-                    pcb->is_active_on_pitch = false;
+                    ++g_match_context.total_wickets; // for scorecard , atomic increment of total wickets in the match context
+                    ++g_match_context.balls_in_current_over; // for over progression, caught is still a legal delivery
+                    --active_batsmen_count; // for the match flow, decrement active batsmen count so umpire can send next one in
+                    pcb->is_active_on_pitch = false;// mark this batsman as no longer active on the pitch
                     wicket_fell = true;
-                    // Track bowler wicket
+                    // Track bowler wicket , if we have a valid current bowler, increment their wicket count and ball count for stats
                     if (current_bowler_pcb) {
                         ++current_bowler_pcb->wickets_taken;
                         ++current_bowler_pcb->total_balls_bowled;
@@ -190,7 +212,7 @@ void* batsman_routine(void* arg) {
                     UnlockChecked(&score_mutex, "score_mutex unlock (caught)");
 
                     // Mark delivery resolved for the bowler
-                    // IMPORTANT: bowler is blocked on resolved_cond — must unblock it before returning
+                    // IMPORTANT: bowler is blocked on resolved_cond — must unblock it before returning , we set delivery_resolved=true to indicate to the bowler that the delivery has been fully resolved and it can proceed to the next ball, then we broadcast on resolved_cond to wake the bowler thread in case it's waiting for this signal
                     LockChecked(&ball_mutex, "ball_mutex lock (resolve caught)");
                     delivery_resolved = true;
                     UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve caught)");
@@ -219,6 +241,7 @@ void* batsman_routine(void* arg) {
                     // 1 or 3 runs means both batsmen must cross to the other end.
                     // Set up all exchange flags, then both threads (striker here, non-striker above)
                     // independently report their crease result. The umpire adjudicates.
+                    // setting up the state for a run exchange, we lock the score_mutex to update the shared state that indicates a run exchange is needed and to set the number of runs for the exchange, we also reset all the flags related to the crease attempts and exchange resolution to prepare for this new exchange, then we unlock the score_mutex to allow the striker and non-striker threads to proceed with their respective crease attempts and reporting
                     LockChecked(&score_mutex, "score_mutex lock (odd runs)");
                     run_exchange_needed     = true;
                     run_exchange_runs       = result;
@@ -245,15 +268,15 @@ void* batsman_routine(void* arg) {
                     }
 
                     // Publish striker's result; umpire needs BOTH batsmen's results before resolving
-                    LockChecked(&score_mutex, "score_mutex lock (striker crease)");
+                    LockChecked(&score_mutex, "score_mutex lock (striker crease)"); // locking score_mutex to update shared state about striker's crease attempt result for the umpire
                     striker_let_go = let_go;
                     striker_crease_done = true;
-                    UnlockChecked(&score_mutex, "score_mutex unlock (striker crease)");
-                    BroadcastChecked(&run_exchange_cond, "run_exchange_cond (striker done)");
+                    UnlockChecked(&score_mutex, "score_mutex unlock (striker crease)"); 
+                    BroadcastChecked(&run_exchange_cond, "run_exchange_cond (striker done)"); // wake umpire in case it's waiting for the striker's report
 
                     // Wait for umpire to resolve exchange
                     // Umpire will set exchange_resolved once both batsmen have reported
-                    LockChecked(&score_mutex, "score_mutex lock (striker wait resolve)");
+                    LockChecked(&score_mutex, "score_mutex lock (striker wait resolve)"); // locking score_mutex to wait for the umpire to resolve the run exchange based on the reports from both batsmen
                     while (!exchange_resolved && !match_completed) {
                         timespec ts{};
                         clock_gettime(CLOCK_REALTIME, &ts);
@@ -263,20 +286,20 @@ void* batsman_routine(void* arg) {
                     int credited = exchange_credited_runs;  // actual runs umpire decided to award
                     bool wicket  = exchange_wicket;         // true if a run-out was called
                     int  victim  = exchange_runout_id;      // player_id of run-out batsman (-1 if none)
-                    UnlockChecked(&score_mutex, "score_mutex unlock (striker wait resolve)");
+                    UnlockChecked(&score_mutex, "score_mutex unlock (striker wait resolve)"); // after umpire has resolved the exchange, we read the final decision on how many runs to credit and whether there was a wicket
 
                     // Advance ball count
-                    LockChecked(&score_mutex, "score_mutex lock (advance ball odd)");
+                    LockChecked(&score_mutex, "score_mutex lock (advance ball odd)"); // update the global score and ball count for this delivery, we add the credited runs to the global score and increment the ball count for the current over
                     g_match_context.global_score += credited;
                     ++g_match_context.balls_in_current_over;
-                    UnlockChecked(&score_mutex, "score_mutex unlock (advance ball odd)");
+                    UnlockChecked(&score_mutex, "score_mutex unlock (advance ball odd)"); // after updating the match context for the runs and ball count, we check if the credited runs are odd, if so we call SwapStrikeUnsafe to rotate the strike between the two batsmen
 
                     // Mark delivery resolved
-                    LockChecked(&ball_mutex, "ball_mutex lock (resolve odd)");
+                    LockChecked(&ball_mutex, "ball_mutex lock (resolve odd)"); // locking ball_mutex to update delivery state and signal the bowler that the delivery has been fully resolved and it can proceed to the next ball, we set delivery_resolved=true to indicate that the delivery has been resolved and the bowler can proceed, then we broadcast on resolved_cond to wake the bowler thread in case it's waiting for this signal, and we also signal umpire_cond in case the umpire is waiting for the delivery to be resolved before it can send in the next batsman or proceed with the match flow
                     delivery_resolved = true;
-                    UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve odd)");
-                    BroadcastChecked(&resolved_cond, "resolved_cond (odd)");
-                    SignalChecked(&umpire_cond, "umpire_cond (odd)");
+                    UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve odd)"); // unclock ball_mutex after updating delivery state for odd runs
+                    BroadcastChecked(&resolved_cond, "resolved_cond (odd)"); // wake bowler
+                    SignalChecked(&umpire_cond, "umpire_cond (odd)"); // wake umpire in case it's waiting for this delivery to be resolved before it can proceed with the match flow
 
                     // If this batsman (the striker) was the one run out, exit the thread
                     if (wicket && victim == pid) {
@@ -295,9 +318,9 @@ void* batsman_routine(void* arg) {
                     UnlockChecked(&score_mutex, "score_mutex unlock (even runs)");
 
                     // Mark delivery resolved
-                    LockChecked(&ball_mutex, "ball_mutex lock (resolve even)");
+                    LockChecked(&ball_mutex, "ball_mutex lock (resolve even)"); // locking ball_mutex to update delivery state and signal the bowler that the delivery has been fully resolved and it can proceed to the next ball, we set delivery_resolved=true to indicate that the delivery has been resolved and the bowler can proceed, then we broadcast on resolved_cond to wake the bowler thread in case it's waiting for this signal, and we also signal umpire_cond in case the umpire is waiting for the delivery to be resolved before it can send in the next batsman or proceed with the match flow
                     delivery_resolved = true;
-                    UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve even)");
+                    UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve even)"); // for even
                     BroadcastChecked(&resolved_cond, "resolved_cond (even)");
                     SignalChecked(&umpire_cond, "umpire_cond (even)");
                 }
@@ -307,12 +330,12 @@ void* batsman_routine(void* arg) {
                 LogS("  MISS: [%s] plays and misses! Ball goes to keeper.\n", pcb->name);
                 ++pcb->balls_faced;
 
-                LockChecked(&ball_mutex, "ball_mutex lock (miss)");
+                LockChecked(&ball_mutex, "ball_mutex lock (miss)"); // lock ball_mutex for  keepr interaction 
                 keeper_event_pending = true;      // tells the keeper thread to wake up and resolve
                 shared_hit_result = INVALID_HIT_RESULT;
                 SignalChecked(&keeper_cond, "keeper_cond (miss)");
 
-                // Wait for keeper to set shared_hit_result (0=dot, 1=bye on fumble)
+                // Wait for keeper to set shared_hit_result (0=dot, 4=bye on fumble)
                 while (shared_hit_result == INVALID_HIT_RESULT && !match_completed) {
                     timespec ts{};
                     clock_gettime(CLOCK_REALTIME, &ts);
@@ -324,8 +347,8 @@ void* batsman_routine(void* arg) {
                         Log("  TIMEOUT: Keeper didn't respond, dot ball.\n");
                     }
                 }
-                int bye_result = shared_hit_result;
-                UnlockChecked(&ball_mutex, "ball_mutex unlock (miss)");
+                int bye_result = shared_hit_result; // 0 if keeper gathered cleanly, 4 if keeper fumbled and allowed a bye
+                UnlockChecked(&ball_mutex, "ball_mutex unlock (miss)"); // unlock ball_mutex after keeper interaction
 
                 if (bye_result > 0) {
                     // Byes! Keeper fumbled
@@ -351,7 +374,7 @@ void* batsman_routine(void* arg) {
                 }
 
                 // Unblock the bowler so it can send the next delivery
-                LockChecked(&ball_mutex, "ball_mutex lock (resolve miss)");
+                LockChecked(&ball_mutex, "ball_mutex lock (resolve miss)"); // lock for keeper interaction to update delivery state and signal the bowler that the delivery has been resolved and it can proceed to the next ball, we set delivery_resolved=true to indicate that the delivery has been resolved and the bowler can proceed, then we broadcast on resolved_cond to wake the bowler thread in case it's waiting for this signal, and we also signal umpire_cond in case the umpire is waiting for the delivery to be resolved before it can proceed with the match flow
                 delivery_resolved = true;
                 UnlockChecked(&ball_mutex, "ball_mutex unlock (resolve miss)");
                 BroadcastChecked(&resolved_cond, "resolved_cond (miss)");

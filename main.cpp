@@ -115,7 +115,7 @@ int main() {
     }
 
     //  Reset all shared state
-    g_match_context = {0, 0, 0, 0}; // global_score, total_wickets, current_over, balls_in_current_over
+    g_match_context = {0, 0, 0, 0, 0}; // global_score, total_wickets, current_over, balls_in_current_over, total_wides
     match_completed       = false; // set to true by umpire when match is over
     match_intensity_high  = false;// it will become true after death over activation, affects scheduling decisions
     active_striker_id     = -1; // player_id of striker, -1 if no striker currently  like in between overs and wicket there will be no batsman just to prevent deadlock
@@ -128,6 +128,7 @@ int main() {
     current_ball_sequence = 0; //  incremented by bowler for each new delivvery , so that we can make a track of which delivery is being processed
     handled_ball_sequence = -1; // set by fielder/keeper when they resolve a ball, so that we can track if the striker is waiting for a resolution for the correct delivery
     keeper_event_pending  = false; // set by striker when he misses, so that keeper can step in to resolve, also used for byes when striker misses but keeper has to decide if he can take a run or not
+    delivery_is_wide      = false; // set by bowler when the delivery is a wide
     run_exchange_needed   = false; // set by striker when he takes an odd run, so that both batsmen know they need to swap creases, umpire waits on this to coordinate the exchange
     exchange_resolved     = false; // set by umpire when the run exchange is resolved, so that batsmen can proceed after an odd run
     exchange_wicket       = false; // set by umpire when there is a run-out during the exchange, so that batsmen can know the outcome of the exchange and react accordingly
@@ -376,6 +377,9 @@ join_and_cleanup:
                         b->fours, b->sixes, b->how_out);
         }
 
+        puts("|                                                            |");
+        printf("|  Extras: %d wd                                             |\n",
+                    g_match_context.total_wides);
         puts("|                                                            |");
         puts("|  BOWLING                                                   |");
         printf("|  %-20s  %4s  %4s  %3s  %7s  |\n",

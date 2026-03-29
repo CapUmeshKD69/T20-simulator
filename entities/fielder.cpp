@@ -4,38 +4,31 @@
 #include <random>
 using namespace std;
 
-// ═══════════════════════════════════════════════════
-//  FIELDER / WICKETKEEPER ROUTINE
-//
 //  Keeper: waits on keeper_cond, gathers missed ball
 //  Fielder: waits on fielders_cond, catches/fields the ball
-// ═══════════════════════════════════════════════════
-//
 //  All 11 fielding players (10 fielders + 1 keeper) run this
 //  same function. The keeper is distinguished by its role field.
-//
 //  FIELDER RACE:
 //  When striker hits the ball, ALL fielder threads are woken via
 //  broadcast on fielders_cond. They all compete to claim the ball,
 //  but only one wins — enforced by the (handled_ball_sequence == seq)
 //  guard. The winner sets shared_hit_result and signals the striker.
-//
 //  KEEPER PATH:
 //  The keeper never competes for a hit ball. It only activates on
 //  keeper_cond, which the striker signals when it misses (shot 78-95)
 //  or when both miss (shot 98-100).
-void* fielder_routine(void* arg) {
-    auto* pcb = static_cast<PlayerControlBlock*>(arg);
-    if (!pcb) return nullptr;
+void* fielder_routine(void* arg) { 
+    auto* pcb = static_cast<PlayerControlBlock*>(arg); // cast the argument to a PlayerControlBlock pointer, which contains the player's state and role information
+    if (!pcb) return nullptr; // if the argument is null, return immediately to avoid dereferencing a null pointer
 
-    thread_local mt19937 rng(random_device{}());
+    thread_local mt19937 rng(random_device{}()); // thread-local random number generator for this fielder thread, seeded with a random device for good randomness
     uniform_int_distribution<int> field_roll(1, 100);    // determines fielding outcome (runs scored or catch)
     uniform_int_distribution<int> keeper_fumble(1, 100); // determines if the keeper fumbles (lets through byes)
 
-    while (!MatchOver()) {
-        LockChecked(&ball_mutex, "ball_mutex lock (fielder)");
+    while (!MatchOver()) { // main loop runs until the match is over, checked by the MatchOver() function which likely checks a shared match state variable
+        LockChecked(&ball_mutex, "ball_mutex lock (fielder)"); // lock ball_mutex to check for ball state and potentially wait for a delivery to be hit into the field or for a keeper event
 
-        if (pcb->role == PlayerRole::WICKETKEEPER) {
+        if (pcb->role == PlayerRole::WICKETKEEPER) { // if this player is the wicketkeeper, it follows the keeper path
             // ── Keeper path ──────────────────────────────
             // Keeper sleeps here until striker signals a miss event via keeper_cond
             while (!keeper_event_pending && !match_completed) {
@@ -46,13 +39,13 @@ void* fielder_routine(void* arg) {
                 break;
             }
             keeper_event_pending = false;  // consume the event flag before processing
-
+            
             // Keeper has 5% chance of fumbling → byes
             // Only sets result if no one else has set it yet (shared_hit_result still INVALID)
             int fumble = keeper_fumble(rng);
             if (fumble <= 5 && shared_hit_result == INVALID_HIT_RESULT) {
                 // Keeper missed too! 1 bye
-                shared_hit_result = 1;
+                shared_hit_result = 4; // 4 runs for byes
                 LogS("  [%s] FUMBLES! Byes scored!\n", pcb->name);
             } else {
                 if (shared_hit_result == INVALID_HIT_RESULT) {

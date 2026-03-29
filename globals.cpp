@@ -2,7 +2,7 @@
 using namespace std;
 
 // global variables initialize 
-MatchContext g_match_context = {0, 0, 0, 0}; // runs, wickets, overs, balls in current over
+MatchContext g_match_context = {0, 0, 0, 0, 0}; // runs, wickets, overs, balls in current over
 bool match_completed       = false;
 int  active_striker_id     = -1;
 int  non_striker_id        = -1;
@@ -18,6 +18,8 @@ bool ball_in_air        = false; // when ball is in air then we set this to true
 int  shared_hit_result  = INVALID_HIT_RESULT; // output of the shot
 int  current_ball_sequence  = 0; // sequence number of the current ball being bowled
 int  handled_ball_sequence  = -1; // sequence number of the ball for which fielder or keeper has resolved 
+bool keeper_event_pending   = false; // set by striker when he misses
+bool delivery_is_wide       = false; // set by bowler when the delivery is a wide
 
 // variables for strike exchange logic
 bool run_exchange_needed      = false; //strike exchange needted or not

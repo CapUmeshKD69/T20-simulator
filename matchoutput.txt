@@ -7,902 +7,911 @@
 
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 0.1
-  >> [Rohit Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 4 run(s)
-  RUNS: [Rohit Sharma] scores 4 run(s)!
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 0.2
-  >> [Rohit Sharma] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Rohit Sharma] scores 1 run(s)!
-  OK: [Rohit Sharma] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 0.3
-  MISS: [Abhishek Sharma] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Abhishek Sharma] dot ball.
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 0.4
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 1 run(s)
-  RUNS: [Abhishek Sharma] scores 1 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Rohit Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Rohit Sharma
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 0.5
-  >> [Rohit Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 4 run(s)
-  RUNS: [Rohit Sharma] scores 4 run(s)!
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 0.6
   MISS: [Rohit Sharma] plays and misses! Ball goes to keeper.
   [Jos Buttler] gathers the ball cleanly.
   DOT: [Rohit Sharma] dot ball.
-  [Umpire] END OF OVER 1. Strike rotated.
-  -> Striker is now Abhishek Sharma
 ------------------------------------------------------
-  === Score: 10/0 after 1 overs ===
+>> [Jofra Archer] bowls delivery 0.2
+   ~~ [Jofra Archer] bowls a WIDE! +1 penalty run.
+  WIDE: Wide ball called! +1 run (extras).
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 0.2
+  MISS: [Rohit Sharma] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Rohit Sharma] dot ball.
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 0.3
+  >> [Rohit Sharma] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [Rohit Sharma] scores 4 run(s)!
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 0.4
+  >> [Rohit Sharma] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 4 run(s)
+  RUNS: [Rohit Sharma] scores 4 run(s)!
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 0.5
+  >> [Rohit Sharma] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [Rohit Sharma] scores 4 run(s)!
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 0.6
+  >> [Rohit Sharma] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 1 run(s)
+  RUNS: [Rohit Sharma] scores 1 run(s)!
+  OK: [Rohit Sharma] (striker) makes it to the other end.
+  SUCCESS: [Abhishek Sharma] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Abhishek Sharma
+  [Umpire] END OF OVER 1. Strike rotated.
+  -> Striker is now Rohit Sharma
+------------------------------------------------------
+  === Score: 14/0 after 1 overs ===
   [BowlerManager] Over change: Jofra Archer -> Ben Stokes
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 1.1
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 2 run(s)
-  RUNS: [Abhishek Sharma] scores 2 run(s)!
+  >> [Rohit Sharma] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [Rohit Sharma] scores 1 run(s)!
+  OK: [Rohit Sharma] (striker) makes it to the other end.
+  SUCCESS: [Abhishek Sharma] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Abhishek Sharma
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 1.2
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 6 run(s)
-  RUNS: [Abhishek Sharma] scores 6 run(s)!
+  BYES: [Abhishek Sharma] ball beats everyone!
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Abhishek Sharma] keeper gathers, dot ball.
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 1.3
-  MISS: [Abhishek Sharma] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Abhishek Sharma] dot ball.
+   ~~ [Ben Stokes] bowls a WIDE! +1 penalty run.
+  WIDE: Wide ball called! +1 run (extras).
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 1.3
+  >> [Abhishek Sharma] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [Abhishek Sharma] scores 2 run(s)!
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 1.4
   >> [Abhishek Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 1 run(s)
+  [Harry Brook] fields the ball -> 1 run(s)
   RUNS: [Abhishek Sharma] scores 1 run(s)!
   OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Rohit Sharma] (non-striker) makes it to the other crease.
+  SUCCESS: [Rohit Sharma] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
   -> Striker is now Rohit Sharma
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 1.5
   >> [Rohit Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 6 run(s)
-  RUNS: [Rohit Sharma] scores 6 run(s)!
+  [Harry Brook] fields the ball -> 2 run(s)
+  RUNS: [Rohit Sharma] scores 2 run(s)!
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 1.6
   >> [Rohit Sharma] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Rohit Sharma] scores 1 run(s)!
-  OK: [Rohit Sharma] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
+  [Joe Root] takes the CATCH! OUT!
+  OUT: [Rohit Sharma] OUT! Caught by fielder!
   [Umpire] END OF OVER 2. Strike rotated.
-  -> Striker is now Rohit Sharma
+  -> Striker is now Abhishek Sharma
 ------------------------------------------------------
-  === Score: 26/0 after 2 overs ===
+  === Score: 21/1 after 2 overs ===
   [BowlerManager] Over change: Ben Stokes -> Adil Rashid
+  NEW IN: [Umpire] Suryakumar Yadav walks in (SJF, expected_stay=5).
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 2.1
-  BYES: [Rohit Sharma] ball beats everyone!
+  MISS: [Abhishek Sharma] plays and misses! Ball goes to keeper.
   [Jos Buttler] gathers the ball cleanly.
-  DOT: [Rohit Sharma] keeper gathers, dot ball.
+  DOT: [Abhishek Sharma] dot ball.
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 2.2
-  >> [Rohit Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 2 run(s)
-  RUNS: [Rohit Sharma] scores 2 run(s)!
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 2.3
-  >> [Rohit Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [Rohit Sharma] scores 1 run(s)!
-  OK: [Rohit Sharma] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 2.4
   >> [Abhishek Sharma] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 2.5
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 2.6
-  BYES: [Abhishek Sharma] ball beats everyone!
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Abhishek Sharma] keeper gathers, dot ball.
-  [Umpire] END OF OVER 3. Strike rotated.
-  -> Striker is now Rohit Sharma
-------------------------------------------------------
-  === Score: 37/0 after 3 overs ===
-  [BowlerManager] Over change: Adil Rashid -> Chris Woakes
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 3.1
-  >> [Rohit Sharma] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [Rohit Sharma] scores 1 run(s)!
-  OK: [Rohit Sharma] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 3.2
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 2 run(s)
+  [Phil Salt] fields the ball -> 2 run(s)
   RUNS: [Abhishek Sharma] scores 2 run(s)!
 ------------------------------------------------------
->> [Chris Woakes] bowls delivery 3.3
+>> [Adil Rashid] bowls delivery 2.3
   >> [Abhishek Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
+  [Phil Salt] fields the ball -> 6 run(s)
+  RUNS: [Abhishek Sharma] scores 6 run(s)!
 ------------------------------------------------------
->> [Chris Woakes] bowls delivery 3.4
+>> [Adil Rashid] bowls delivery 2.4
   >> [Abhishek Sharma] smashes the ball into the field!
   [Phil Salt] fields the ball -> 1 run(s)
   RUNS: [Abhishek Sharma] scores 1 run(s)!
   OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Rohit Sharma] (non-striker) makes it to the other crease.
+  SUCCESS: [Suryakumar Yadav] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Rohit Sharma
+  -> Striker is now Suryakumar Yadav
 ------------------------------------------------------
->> [Chris Woakes] bowls delivery 3.5
-  WICKET: [Rohit Sharma] CLEAN BOWLED! OUT!
-  NEW IN: [Umpire] Suryakumar Yadav walks in (SJF, expected_stay=5).
+>> [Adil Rashid] bowls delivery 2.5
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 1 run(s)
+  RUNS: [Suryakumar Yadav] scores 1 run(s)!
+  OK: [Suryakumar Yadav] (striker) makes it to the other end.
+  SUCCESS: [Abhishek Sharma] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Abhishek Sharma
 ------------------------------------------------------
->> [Chris Woakes] bowls delivery 3.6
+>> [Adil Rashid] bowls delivery 2.6
+  MISS: [Abhishek Sharma] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Abhishek Sharma] dot ball.
+  [Umpire] END OF OVER 3. Strike rotated.
+  -> Striker is now Suryakumar Yadav
+------------------------------------------------------
+  === Score: 31/1 after 3 overs ===
+  [BowlerManager] Over change: Adil Rashid -> Chris Woakes
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.1
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [Suryakumar Yadav] scores 2 run(s)!
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.2
+   ~~ [Chris Woakes] bowls a WIDE! +1 penalty run.
+  WIDE: Wide ball called! +1 run (extras).
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.2
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [Suryakumar Yadav] scores 1 run(s)!
+  OK: [Suryakumar Yadav] (striker) makes it to the other end.
+  SUCCESS: [Abhishek Sharma] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Abhishek Sharma
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.3
+  >> [Abhishek Sharma] smashes the ball into the field!
+  [Joe Root] fields the ball -> 3 run(s)
+  RUNS: [Abhishek Sharma] scores 3 run(s)!
+  OK: [Abhishek Sharma] (striker) makes it to the other end.
+  SUCCESS: [Suryakumar Yadav] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Suryakumar Yadav
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.4
   >> [Suryakumar Yadav] smashes the ball into the field!
   [Joe Root] fields the ball -> 4 run(s)
   RUNS: [Suryakumar Yadav] scores 4 run(s)!
-  [Umpire] END OF OVER 4. Strike rotated.
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.5
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [Suryakumar Yadav] scores 4 run(s)!
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 3.6
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 3 run(s)
+  RUNS: [Suryakumar Yadav] scores 3 run(s)!
+  OK: [Suryakumar Yadav] (striker) makes it to the other end.
+  SUCCESS: [Abhishek Sharma] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
   -> Striker is now Abhishek Sharma
+  [Umpire] END OF OVER 4. Strike rotated.
+  -> Striker is now Suryakumar Yadav
 ------------------------------------------------------
   === Score: 49/1 after 4 overs ===
   [BowlerManager] Over change: Chris Woakes -> Moeen Ali
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 4.1
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
+  MISS: [Suryakumar Yadav] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Suryakumar Yadav] dot ball.
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 4.2
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 2 run(s)
+  RUNS: [Suryakumar Yadav] scores 2 run(s)!
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 4.3
-  MISS: [Abhishek Sharma] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Abhishek Sharma] dot ball.
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 4.4
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [Abhishek Sharma] scores 1 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Suryakumar Yadav] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Suryakumar Yadav
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 4.5
-  MISS: [Suryakumar Yadav] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Suryakumar Yadav] dot ball.
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 4.6
-  MISS: [Suryakumar Yadav] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Suryakumar Yadav] dot ball.
-  [Umpire] END OF OVER 5. Strike rotated.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
-  === Score: 58/1 after 5 overs ===
-  [BowlerManager] Over change: Moeen Ali -> Jofra Archer
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 5.1
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Abhishek Sharma] scores 1 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Suryakumar Yadav] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Suryakumar Yadav
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 5.2
   >> [Suryakumar Yadav] smashes the ball into the field!
   [Phil Salt] fields the ball -> 2 run(s)
   RUNS: [Suryakumar Yadav] scores 2 run(s)!
 ------------------------------------------------------
+>> [Moeen Ali] bowls delivery 4.4
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [Suryakumar Yadav] scores 4 run(s)!
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 4.5
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [Suryakumar Yadav] scores 1 run(s)!
+  OK: [Suryakumar Yadav] (striker) makes it to the other end.
+  SUCCESS: [Abhishek Sharma] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Abhishek Sharma
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 4.6
+  >> [Abhishek Sharma] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [Abhishek Sharma] scores 4 run(s)!
+  [Umpire] END OF OVER 5. Strike rotated.
+  -> Striker is now Suryakumar Yadav
+------------------------------------------------------
+  === Score: 62/1 after 5 overs ===
+  [BowlerManager] Over change: Moeen Ali -> Jofra Archer
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 5.1
+  MISS: [Suryakumar Yadav] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Suryakumar Yadav] dot ball.
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 5.2
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 6 run(s)
+  RUNS: [Suryakumar Yadav] scores 6 run(s)!
+------------------------------------------------------
 >> [Jofra Archer] bowls delivery 5.3
   >> [Suryakumar Yadav] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 4 run(s)
-  RUNS: [Suryakumar Yadav] scores 4 run(s)!
+  [Jecob Bethel] fields the ball -> 6 run(s)
+  RUNS: [Suryakumar Yadav] scores 6 run(s)!
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 5.4
   >> [Suryakumar Yadav] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 4 run(s)
-  RUNS: [Suryakumar Yadav] scores 4 run(s)!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [Suryakumar Yadav] scores 2 run(s)!
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 5.5
   >> [Suryakumar Yadav] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Suryakumar Yadav] scores 1 run(s)!
-  OK: [Suryakumar Yadav] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
+  [Jecob Bethel] fields the ball -> 6 run(s)
+  RUNS: [Suryakumar Yadav] scores 6 run(s)!
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 5.6
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 2 run(s)
-  RUNS: [Abhishek Sharma] scores 2 run(s)!
+  >> [Suryakumar Yadav] smashes the ball into the field!
+  [Joe Root] takes the CATCH! OUT!
+  OUT: [Suryakumar Yadav] OUT! Caught by fielder!
   [Umpire] END OF OVER 6. Strike rotated.
-  -> Striker is now Suryakumar Yadav
+  -> Striker is now Abhishek Sharma
 ------------------------------------------------------
-  === Score: 72/1 after 6 overs ===
+  === Score: 82/2 after 6 overs ===
+  NEW IN: [Umpire] KL Rahul walks in (SJF, expected_stay=7).
   [BowlerManager] Over change: Jofra Archer -> Ben Stokes
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 6.1
-  MISS: [Suryakumar Yadav] plays and misses! Ball goes to keeper.
+  MISS: [Abhishek Sharma] plays and misses! Ball goes to keeper.
   [Jos Buttler] gathers the ball cleanly.
-  DOT: [Suryakumar Yadav] dot ball.
+  DOT: [Abhishek Sharma] dot ball.
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 6.2
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 4 run(s)
-  RUNS: [Suryakumar Yadav] scores 4 run(s)!
+  >> [Abhishek Sharma] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [Abhishek Sharma] scores 2 run(s)!
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 6.3
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Suryakumar Yadav] scores 1 run(s)!
-  OK: [Suryakumar Yadav] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Ben Stokes] bowls delivery 6.4
   >> [Abhishek Sharma] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [Abhishek Sharma] scores 1 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Suryakumar Yadav] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Suryakumar Yadav
-------------------------------------------------------
->> [Ben Stokes] bowls delivery 6.5
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Suryakumar Yadav] scores 1 run(s)!
-  OK: [Suryakumar Yadav] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Ben Stokes] bowls delivery 6.6
-  BYES: [Abhishek Sharma] ball beats everyone!
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Abhishek Sharma] keeper gathers, dot ball.
-  [Umpire] END OF OVER 7. Strike rotated.
-  -> Striker is now Suryakumar Yadav
-------------------------------------------------------
-  === Score: 79/1 after 7 overs ===
-  [BowlerManager] Over change: Ben Stokes -> Adil Rashid
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 7.1
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 1 run(s)
-  RUNS: [Suryakumar Yadav] scores 1 run(s)!
-  OK: [Suryakumar Yadav] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 7.2
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 1 run(s)
-  RUNS: [Abhishek Sharma] scores 1 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [Suryakumar Yadav] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Suryakumar Yadav
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 7.3
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 4 run(s)
-  RUNS: [Suryakumar Yadav] scores 4 run(s)!
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 7.4
-  MISS: [Suryakumar Yadav] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Suryakumar Yadav] dot ball.
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 7.5
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [Suryakumar Yadav] scores 1 run(s)!
-  OK: [Suryakumar Yadav] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 7.6
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
-  [Umpire] END OF OVER 8. Strike rotated.
-  -> Striker is now Suryakumar Yadav
-------------------------------------------------------
-  === Score: 90/1 after 8 overs ===
-  [BowlerManager] Over change: Adil Rashid -> Chris Woakes
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 8.1
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Joe Root] fields the ball -> 2 run(s)
-  RUNS: [Suryakumar Yadav] scores 2 run(s)!
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 8.2
-  >> [Suryakumar Yadav] smashes the ball into the field!
-  [Harry Brook] takes the CATCH! OUT!
-  OUT: [Suryakumar Yadav] OUT! Caught by fielder!
-  NEW IN: [Umpire] KL Rahul walks in (SJF, expected_stay=7).
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 8.3
-  >> [KL Rahul] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 4 run(s)
-  RUNS: [KL Rahul] scores 4 run(s)!
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 8.4
-  >> [KL Rahul] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 4 run(s)
-  RUNS: [KL Rahul] scores 4 run(s)!
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 8.5
-  >> [KL Rahul] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [KL Rahul] scores 1 run(s)!
-  OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 8.6
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
-  [Umpire] END OF OVER 9. Strike rotated.
-  -> Striker is now KL Rahul
-------------------------------------------------------
-  === Score: 105/2 after 9 overs ===
-  [BowlerManager] Over change: Chris Woakes -> Moeen Ali
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 9.1
-  >> [KL Rahul] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [KL Rahul] scores 1 run(s)!
-  OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 9.2
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 2 run(s)
-  RUNS: [Abhishek Sharma] scores 2 run(s)!
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 9.3
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Abhishek Sharma] scores 1 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [KL Rahul] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now KL Rahul
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 9.4
-  >> [KL Rahul] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [KL Rahul] scores 1 run(s)!
-  OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 9.5
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 4 run(s)
-  RUNS: [Abhishek Sharma] scores 4 run(s)!
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 9.6
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 2 run(s)
-  RUNS: [Abhishek Sharma] scores 2 run(s)!
-  [Umpire] END OF OVER 10. Strike rotated.
-  -> Striker is now KL Rahul
-------------------------------------------------------
-  === Score: 116/2 after 10 overs ===
-  [BowlerManager] Over change: Moeen Ali -> Jofra Archer
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 10.1
-  >> [KL Rahul] smashes the ball into the field!
-  [Joe Root] fields the ball -> 4 run(s)
-  RUNS: [KL Rahul] scores 4 run(s)!
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 10.2
-  >> [KL Rahul] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [KL Rahul] scores 1 run(s)!
-  OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [Abhishek Sharma] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 10.3
-  BYES: [Abhishek Sharma] ball beats everyone!
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Abhishek Sharma] keeper gathers, dot ball.
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 10.4
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 2 run(s)
-  RUNS: [Abhishek Sharma] scores 2 run(s)!
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 10.5
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 6 run(s)
-  RUNS: [Abhishek Sharma] scores 6 run(s)!
-------------------------------------------------------
->> [Jofra Archer] bowls delivery 10.6
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 3 run(s)
-  RUNS: [Abhishek Sharma] scores 3 run(s)!
-  OK: [Abhishek Sharma] (striker) makes it to the other end.
-  OK: [KL Rahul] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now KL Rahul
-  [Umpire] END OF OVER 11. Strike rotated.
-  -> Striker is now Abhishek Sharma
-------------------------------------------------------
-  === Score: 132/2 after 11 overs ===
-  [BowlerManager] Over change: Jofra Archer -> Ben Stokes
-------------------------------------------------------
->> [Ben Stokes] bowls delivery 11.1
-  >> [Abhishek Sharma] smashes the ball into the field!
-  [Joe Root] fields the ball -> 2 run(s)
-  RUNS: [Abhishek Sharma] scores 2 run(s)!
-------------------------------------------------------
->> [Ben Stokes] bowls delivery 11.2
-  WICKET: [Abhishek Sharma] CLEAN BOWLED! OUT!
+  [Joe Root] takes the CATCH! OUT!
+  OUT: [Abhishek Sharma] OUT! Caught by fielder!
   NEW IN: [Umpire] MS Dhoni walks in (SJF, expected_stay=10).
 ------------------------------------------------------
->> [Ben Stokes] bowls delivery 11.3
+>> [Ben Stokes] bowls delivery 6.4
   >> [MS Dhoni] smashes the ball into the field!
   [Joe Root] fields the ball -> 2 run(s)
   RUNS: [MS Dhoni] scores 2 run(s)!
 ------------------------------------------------------
->> [Ben Stokes] bowls delivery 11.4
+>> [Ben Stokes] bowls delivery 6.5
   >> [MS Dhoni] smashes the ball into the field!
   [Phil Salt] fields the ball -> 4 run(s)
   RUNS: [MS Dhoni] scores 4 run(s)!
 ------------------------------------------------------
->> [Ben Stokes] bowls delivery 11.5
-  MISS: [MS Dhoni] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [MS Dhoni] dot ball.
-------------------------------------------------------
->> [Ben Stokes] bowls delivery 11.6
+>> [Ben Stokes] bowls delivery 6.6
   >> [MS Dhoni] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 4 run(s)
+  RUNS: [MS Dhoni] scores 4 run(s)!
+  [Umpire] END OF OVER 7. Strike rotated.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+  === Score: 94/3 after 7 overs ===
+  [BowlerManager] Over change: Ben Stokes -> Adil Rashid
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 7.1
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 7.2
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 2 run(s)
+  RUNS: [KL Rahul] scores 2 run(s)!
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 7.3
+  >> [KL Rahul] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [KL Rahul] scores 2 run(s)!
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 7.4
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [MS Dhoni] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now MS Dhoni
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 7.5
+  >> [MS Dhoni] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [MS Dhoni] scores 2 run(s)!
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 7.6
+  >> [MS Dhoni] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [MS Dhoni] scores 4 run(s)!
+  [Umpire] END OF OVER 8. Strike rotated.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+  === Score: 105/3 after 8 overs ===
+  [BowlerManager] Over change: Adil Rashid -> Chris Woakes
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 8.1
+  >> [KL Rahul] smashes the ball into the field!
   [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [MS Dhoni] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now MS Dhoni
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 8.2
+  >> [MS Dhoni] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [MS Dhoni] scores 4 run(s)!
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 8.3
+  >> [MS Dhoni] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 6 run(s)
+  RUNS: [MS Dhoni] scores 6 run(s)!
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 8.4
+  >> [MS Dhoni] smashes the ball into the field!
+  [Joe Root] fields the ball -> 2 run(s)
+  RUNS: [MS Dhoni] scores 2 run(s)!
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 8.5
+  >> [MS Dhoni] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 1 run(s)
   RUNS: [MS Dhoni] scores 1 run(s)!
   OK: [MS Dhoni] (striker) makes it to the other end.
-  OK: [KL Rahul] (non-striker) makes it to the other crease.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 8.6
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
+  [Umpire] END OF OVER 9. Strike rotated.
+  -> Striker is now MS Dhoni
+------------------------------------------------------
+  === Score: 119/3 after 9 overs ===
+  [BowlerManager] Over change: Chris Woakes -> Moeen Ali
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.1
+  >> [MS Dhoni] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [MS Dhoni] scores 1 run(s)!
+  WARNING: [MS Dhoni] (striker) slips! Fails to make crease!
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  DEADLOCK: [Umpire] Striker (MS Dhoni) is RUN OUT!
+  UMPIRE: Only 0 run(s) credited (was 1).
+  OUT: [MS Dhoni] RUN OUT!
+  NEW IN: [Umpire] Hardik Pandya walks in (SJF, expected_stay=12).
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.2
+  WICKET: [Hardik Pandya] CLEAN BOWLED! OUT!
+  NEW IN: [Umpire] Axar Patel walks in (SJF, expected_stay=15).
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.3
+  >> [Axar Patel] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.4
+   ~~ [Moeen Ali] bowls a WIDE! +1 penalty run.
+  WIDE: Wide ball called! +1 run (extras).
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.4
+  BYES: [KL Rahul] ball beats everyone!
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] keeper gathers, dot ball.
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.5
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [KL Rahul] scores 4 run(s)!
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 9.6
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
+  [Umpire] END OF OVER 10. Strike rotated.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+  === Score: 126/5 after 10 overs ===
+  [BowlerManager] Over change: Moeen Ali -> Jofra Archer
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 10.1
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 10.2
+  >> [Axar Patel] smashes the ball into the field!
+  [Joe Root] fields the ball -> 4 run(s)
+  RUNS: [Axar Patel] scores 4 run(s)!
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 10.3
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 6 run(s)
+  RUNS: [Axar Patel] scores 6 run(s)!
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 10.4
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 4 run(s)
+  RUNS: [Axar Patel] scores 4 run(s)!
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 10.5
+  >> [Axar Patel] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+>> [Jofra Archer] bowls delivery 10.6
+  >> [KL Rahul] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
+  [Umpire] END OF OVER 11. Strike rotated.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+  === Score: 143/5 after 11 overs ===
+  [BowlerManager] Over change: Jofra Archer -> Ben Stokes
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 11.1
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 11.2
+  >> [Axar Patel] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 11.3
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 11.4
+  BYES: [Axar Patel] ball beats everyone!
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Axar Patel] keeper gathers, dot ball.
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 11.5
+  BYES: [Axar Patel] ball beats everyone!
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Axar Patel] keeper gathers, dot ball.
+------------------------------------------------------
+>> [Ben Stokes] bowls delivery 11.6
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
   -> Striker is now KL Rahul
   [Umpire] END OF OVER 12. Strike rotated.
-  -> Striker is now MS Dhoni
+  -> Striker is now Axar Patel
 ------------------------------------------------------
-  === Score: 141/3 after 12 overs ===
+  === Score: 147/5 after 12 overs ===
   [BowlerManager] Over change: Ben Stokes -> Adil Rashid
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 12.1
-  >> [MS Dhoni] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [MS Dhoni] scores 1 run(s)!
-  OK: [MS Dhoni] (striker) makes it to the other end.
-  OK: [KL Rahul] (non-striker) makes it to the other crease.
+  >> [Axar Patel] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
   -> Striker is now KL Rahul
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 12.2
   >> [KL Rahul] smashes the ball into the field!
-  [Joe Root] fields the ball -> 4 run(s)
-  RUNS: [KL Rahul] scores 4 run(s)!
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 12.3
-  >> [KL Rahul] smashes the ball into the field!
   [Jecob Bethel] fields the ball -> 1 run(s)
   RUNS: [KL Rahul] scores 1 run(s)!
   OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [MS Dhoni] (non-striker) makes it to the other crease.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now MS Dhoni
+  -> Striker is now Axar Patel
 ------------------------------------------------------
->> [Adil Rashid] bowls delivery 12.4
-  WICKET: [MS Dhoni] CLEAN BOWLED! OUT!
-  NEW IN: [Umpire] Hardik Pandya walks in (SJF, expected_stay=12).
-------------------------------------------------------
->> [Adil Rashid] bowls delivery 12.5
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [KL Rahul] (non-striker) makes it to the other crease.
+>> [Adil Rashid] bowls delivery 12.3
+  >> [Axar Patel] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
   -> Striker is now KL Rahul
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 12.4
+  >> [KL Rahul] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 4 run(s)
+  RUNS: [KL Rahul] scores 4 run(s)!
+------------------------------------------------------
+>> [Adil Rashid] bowls delivery 12.5
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 6 run(s)
+  RUNS: [KL Rahul] scores 6 run(s)!
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 12.6
   >> [KL Rahul] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [KL Rahul] scores 1 run(s)!
-  OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
+  [Phil Salt] fields the ball -> 4 run(s)
+  RUNS: [KL Rahul] scores 4 run(s)!
   [Umpire] END OF OVER 13. Strike rotated.
-  -> Striker is now KL Rahul
+  -> Striker is now Axar Patel
 ------------------------------------------------------
-  === Score: 149/4 after 13 overs ===
+  === Score: 164/5 after 13 overs ===
   [BowlerManager] Over change: Adil Rashid -> Chris Woakes
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 13.1
+  MISS: [Axar Patel] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Axar Patel] dot ball.
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 13.2
+  >> [Axar Patel] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 6 run(s)
+  RUNS: [Axar Patel] scores 6 run(s)!
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 13.3
+  >> [Axar Patel] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 13.4
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
+------------------------------------------------------
+>> [Chris Woakes] bowls delivery 13.5
   >> [KL Rahul] smashes the ball into the field!
   [Joe Root] fields the ball -> 2 run(s)
   RUNS: [KL Rahul] scores 2 run(s)!
 ------------------------------------------------------
->> [Chris Woakes] bowls delivery 13.2
-  >> [KL Rahul] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 2 run(s)
-  RUNS: [KL Rahul] scores 2 run(s)!
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 13.3
-  >> [KL Rahul] smashes the ball into the field!
-  [Joe Root] fields the ball -> 4 run(s)
-  RUNS: [KL Rahul] scores 4 run(s)!
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 13.4
+>> [Chris Woakes] bowls delivery 13.6
   >> [KL Rahul] smashes the ball into the field!
   [Phil Salt] fields the ball -> 1 run(s)
   RUNS: [KL Rahul] scores 1 run(s)!
   OK: [KL Rahul] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
-------------------------------------------------------
->> [Chris Woakes] bowls delivery 13.5
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [KL Rahul] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
+  [Umpire] END OF OVER 14. Strike rotated.
   -> Striker is now KL Rahul
 ------------------------------------------------------
->> [Chris Woakes] bowls delivery 13.6
-  >> [KL Rahul] smashes the ball into the field!
-  [Phil Salt] takes the CATCH! OUT!
-  OUT: [KL Rahul] OUT! Caught by fielder!
-  [Umpire] END OF OVER 14. Strike rotated.
-  -> Striker is now Hardik Pandya
-------------------------------------------------------
-  === Score: 159/5 after 14 overs ===
-  NEW IN: [Umpire] Axar Patel walks in (SJF, expected_stay=15).
+  === Score: 174/5 after 14 overs ===
   [BowlerManager] Over change: Chris Woakes -> Moeen Ali
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 14.1
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [Axar Patel] (non-striker) makes it to the other crease.
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 2 run(s)
+  RUNS: [KL Rahul] scores 2 run(s)!
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 14.2
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 14.3
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
   -> Striker is now Axar Patel
 ------------------------------------------------------
->> [Moeen Ali] bowls delivery 14.2
-  >> [Axar Patel] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 6 run(s)
-  RUNS: [Axar Patel] scores 6 run(s)!
-------------------------------------------------------
->> [Moeen Ali] bowls delivery 14.3
-  >> [Axar Patel] smashes the ball into the field!
-  [Liam Livingstone] takes the CATCH! OUT!
-  OUT: [Axar Patel] OUT! Caught by fielder!
-  NEW IN: [Umpire] Varun chakravarthy walks in (SJF, expected_stay=20).
-------------------------------------------------------
 >> [Moeen Ali] bowls delivery 14.4
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 6 run(s)
-  RUNS: [Varun chakravarthy] scores 6 run(s)!
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 2 run(s)
+  RUNS: [Axar Patel] scores 2 run(s)!
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 14.5
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
+  >> [Axar Patel] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 2 run(s)
+  RUNS: [Axar Patel] scores 2 run(s)!
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 14.6
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [Varun chakravarthy] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Varun chakravarthy
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 4 run(s)
+  RUNS: [Axar Patel] scores 4 run(s)!
   *** [Umpire] DEATH OVERS! Intensity HIGH! ***
   [Umpire] END OF OVER 15. Strike rotated.
-  -> Striker is now Hardik Pandya
+  -> Striker is now KL Rahul
 ------------------------------------------------------
-  === Score: 174/6 after 15 overs ===
+  === Score: 185/5 after 15 overs ===
   [BowlerManager] Over change: Moeen Ali -> Jofra Archer
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 15.1
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 4 run(s)
-  RUNS: [Hardik Pandya] scores 4 run(s)!
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 15.2
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 2 run(s)
-  RUNS: [Hardik Pandya] scores 2 run(s)!
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 2 run(s)
+  RUNS: [KL Rahul] scores 2 run(s)!
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 15.3
-  MISS: [Hardik Pandya] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Hardik Pandya] dot ball.
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 15.4
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Liam Livingstone] fields the ball -> 4 run(s)
-  RUNS: [Hardik Pandya] scores 4 run(s)!
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 2 run(s)
+  RUNS: [Axar Patel] scores 2 run(s)!
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 15.5
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 2 run(s)
-  RUNS: [Hardik Pandya] scores 2 run(s)!
+  MISS: [Axar Patel] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Axar Patel] dot ball.
 ------------------------------------------------------
 >> [Jofra Archer] bowls delivery 15.6
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [Varun chakravarthy] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Varun chakravarthy
+  >> [Axar Patel] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 2 run(s)
+  RUNS: [Axar Patel] scores 2 run(s)!
   [Umpire] END OF OVER 16. Strike rotated.
-  -> Striker is now Hardik Pandya
+  -> Striker is now KL Rahul
 ------------------------------------------------------
-  === Score: 187/6 after 16 overs ===
+  === Score: 192/5 after 16 overs ===
   [BowlerManager] Over change: Jofra Archer -> Ben Stokes
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 16.1
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [Varun chakravarthy] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Varun chakravarthy
+  >> [KL Rahul] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 2 run(s)
+  RUNS: [KL Rahul] scores 2 run(s)!
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 16.2
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 6 run(s)
-  RUNS: [Varun chakravarthy] scores 6 run(s)!
+  >> [KL Rahul] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 2 run(s)
+  RUNS: [KL Rahul] scores 2 run(s)!
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 16.3
-  MISS: [Varun chakravarthy] plays and misses! Ball goes to keeper.
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
   [Jos Buttler] gathers the ball cleanly.
-  DOT: [Varun chakravarthy] dot ball.
+  DOT: [KL Rahul] dot ball.
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 16.4
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 4 run(s)
+  RUNS: [KL Rahul] scores 4 run(s)!
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 16.5
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Hardik Pandya] scores 1 run(s)!
-  OK: [Hardik Pandya] (striker) makes it to the other end.
-  OK: [Varun chakravarthy] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Varun chakravarthy
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
 ------------------------------------------------------
 >> [Ben Stokes] bowls delivery 16.6
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Harry Brook] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
+  MISS: [KL Rahul] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] dot ball.
   [Umpire] END OF OVER 17. Strike rotated.
-  -> Striker is now Varun chakravarthy
+  -> Striker is now Axar Patel
 ------------------------------------------------------
-  === Score: 197/6 after 17 overs ===
+  === Score: 200/5 after 17 overs ===
   [BowlerManager] Over change: Ben Stokes -> Adil Rashid
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 17.1
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 6 run(s)
-  RUNS: [Varun chakravarthy] scores 6 run(s)!
+  MISS: [Axar Patel] plays and misses! Ball goes to keeper.
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [Axar Patel] dot ball.
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 17.2
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
+  >> [Axar Patel] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
+  -> Striker is now KL Rahul
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 17.3
-  >> [Hardik Pandya] smashes the ball into the field!
+  >> [KL Rahul] smashes the ball into the field!
   [Phil Salt] fields the ball -> 2 run(s)
-  RUNS: [Hardik Pandya] scores 2 run(s)!
+  RUNS: [KL Rahul] scores 2 run(s)!
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 17.4
-  MISS: [Hardik Pandya] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Hardik Pandya] dot ball.
+  >> [KL Rahul] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 17.5
-  >> [Hardik Pandya] smashes the ball into the field!
-  [Joe Root] fields the ball -> 4 run(s)
-  RUNS: [Hardik Pandya] scores 4 run(s)!
+  >> [Axar Patel] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 4 run(s)
+  RUNS: [Axar Patel] scores 4 run(s)!
 ------------------------------------------------------
 >> [Adil Rashid] bowls delivery 17.6
-  MISS: [Hardik Pandya] plays and misses! Ball goes to keeper.
+  MISS: [Axar Patel] plays and misses! Ball goes to keeper.
   [Jos Buttler] gathers the ball cleanly.
-  DOT: [Hardik Pandya] dot ball.
+  DOT: [Axar Patel] dot ball.
   [Umpire] END OF OVER 18. Strike rotated.
-  -> Striker is now Varun chakravarthy
+  -> Striker is now KL Rahul
 ------------------------------------------------------
-  === Score: 210/6 after 18 overs ===
+  === Score: 208/5 after 18 overs ===
   [BowlerManager] Over change: Adil Rashid -> Chris Woakes
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 18.1
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Hardik Pandya] (non-striker) makes it to the other crease.
+  >> [KL Rahul] smashes the ball into the field!
+  [Jecob Bethel] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Hardik Pandya
+  -> Striker is now Axar Patel
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 18.2
-  WICKET: [Hardik Pandya] CLEAN BOWLED! OUT!
-  NEW IN: [Umpire] Arshdeep Singh walks in (SJF, expected_stay=25).
+  >> [Axar Patel] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 18.3
-  >> [Arshdeep Singh] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 6 run(s)
-  RUNS: [Arshdeep Singh] scores 6 run(s)!
+  >> [KL Rahul] smashes the ball into the field!
+  [Joe Root] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 18.4
-  >> [Arshdeep Singh] smashes the ball into the field!
-  [Phil Salt] fields the ball -> 4 run(s)
-  RUNS: [Arshdeep Singh] scores 4 run(s)!
+  >> [Axar Patel] smashes the ball into the field!
+  [Joe Root] fields the ball -> 2 run(s)
+  RUNS: [Axar Patel] scores 2 run(s)!
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 18.5
-  MISS: [Arshdeep Singh] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Arshdeep Singh] dot ball.
+  >> [Axar Patel] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now KL Rahul
 ------------------------------------------------------
 >> [Chris Woakes] bowls delivery 18.6
-  MISS: [Arshdeep Singh] plays and misses! Ball goes to keeper.
-  [Jos Buttler] gathers the ball cleanly.
-  DOT: [Arshdeep Singh] dot ball.
+  >> [KL Rahul] smashes the ball into the field!
+  [Phil Salt] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
+  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
+  -> Striker is now Axar Patel
   [Umpire] END OF OVER 19. Strike rotated.
-  -> Striker is now Varun chakravarthy
+  -> Striker is now KL Rahul
 ------------------------------------------------------
-  === Score: 221/7 after 19 overs ===
+  === Score: 215/5 after 19 overs ===
   [BowlerManager] Over change: Chris Woakes -> Moeen Ali
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 19.1
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 4 run(s)
-  RUNS: [Varun chakravarthy] scores 4 run(s)!
+  BYES: [KL Rahul] ball beats everyone!
+  [Jos Buttler] gathers the ball cleanly.
+  DOT: [KL Rahul] keeper gathers, dot ball.
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 19.2
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Arshdeep Singh] (non-striker) makes it to the other crease.
-  UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Arshdeep Singh
+  >> [KL Rahul] smashes the ball into the field!
+  [Liam Livingstone] fields the ball -> 4 run(s)
+  RUNS: [KL Rahul] scores 4 run(s)!
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 19.3
-  >> [Arshdeep Singh] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 2 run(s)
-  RUNS: [Arshdeep Singh] scores 2 run(s)!
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 4 run(s)
+  RUNS: [KL Rahul] scores 4 run(s)!
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 19.4
-  >> [Arshdeep Singh] smashes the ball into the field!
-  [Jecob Bethel] fields the ball -> 1 run(s)
-  RUNS: [Arshdeep Singh] scores 1 run(s)!
-  OK: [Arshdeep Singh] (striker) makes it to the other end.
-  OK: [Varun chakravarthy] (non-striker) makes it to the other crease.
+  >> [KL Rahul] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 1 run(s)
+  RUNS: [KL Rahul] scores 1 run(s)!
+  OK: [KL Rahul] (striker) makes it to the other end.
+  SUCCESS: [Axar Patel] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Varun chakravarthy
+  -> Striker is now Axar Patel
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 19.5
-  MISS: [Varun chakravarthy] plays and misses! Ball goes to keeper.
+   ~~ [Moeen Ali] bowls a WIDE! +1 penalty run.
+  WIDE: Wide ball called! +1 run (extras).
+------------------------------------------------------
+>> [Moeen Ali] bowls delivery 19.5
+  MISS: [Axar Patel] plays and misses! Ball goes to keeper.
   [Jos Buttler] gathers the ball cleanly.
-  DOT: [Varun chakravarthy] dot ball.
+  DOT: [Axar Patel] dot ball.
 ------------------------------------------------------
 >> [Moeen Ali] bowls delivery 19.6
-  >> [Varun chakravarthy] smashes the ball into the field!
-  [Joe Root] fields the ball -> 1 run(s)
-  RUNS: [Varun chakravarthy] scores 1 run(s)!
-  OK: [Varun chakravarthy] (striker) makes it to the other end.
-  OK: [Arshdeep Singh] (non-striker) makes it to the other crease.
+  >> [Axar Patel] smashes the ball into the field!
+  [Harry Brook] fields the ball -> 1 run(s)
+  RUNS: [Axar Patel] scores 1 run(s)!
+  OK: [Axar Patel] (striker) makes it to the other end.
+  SUCCESS: [KL Rahul] (non-striker) makes it to the other crease.
   UMPIRE: Both batsmen make their crease. Full runs credited. Strike swapped.
-  -> Striker is now Arshdeep Singh
+  -> Striker is now KL Rahul
   [Umpire] END OF OVER 20. Strike rotated.
-  -> Striker is now Varun chakravarthy
+  -> Striker is now Axar Patel
 ------------------------------------------------------
-  === Score: 230/7 after 20 overs ===
+  === Score: 226/5 after 20 overs ===
 ------------------------------------------------------
 
-  === [Umpire] MATCH OVER! Score: 230/7 in 20.0 overs
+  === [Umpire] MATCH OVER! Score: 226/5 in 20.0 overs
   [BowlerManager] Over change: Moeen Ali -> Jofra Archer
 
 +============================================================+
 |                   FINAL SCORECARD                          |
-|  INDIA innings: 230/7 in 20.0 overs                            |
+|  INDIA innings: 226/5 in 20.0 overs                            |
 +============================================================+
 |                                                            |
 |  BATTING                                                   |
 |  Batsman               Runs  Balls   4s   6s  How Out               |
 |  --------------------------------------------------------  |
-|  Rohit Sharma            20    11    2    1  bowled                |
-|  Abhishek Sharma         69    33    8    2  bowled                |
-|  Suryakumar Yadav        29    17    5    0  Catch OUT!            |
-|  KL Rahul                31    15    5    0  Catch OUT!            |
-|  MS Dhoni                 8     6    1    0  bowled                |
-|  Hardik Pandya           25    17    3    0  bowled                |
-|  Axar Patel               6     2    0    1  Catch OUT!            |
-|  Varun chakravarthy      29    13    1    3  not out               |
-|  Arshdeep Singh          13     6    1    1  not out               |
+|  Rohit Sharma            16     9    3    0  Catch OUT!            |
+|  Abhishek Sharma         21    13    1    1  Catch OUT!            |
+|  Suryakumar Yadav        44    17    3    3  Catch OUT!            |
+|  KL Rahul                62    41    6    1  not out               |
+|  MS Dhoni                30    10    4    1  run out               |
+|  Hardik Pandya            0     1    0    0  bowled                |
+|  Axar Patel              49    29    4    2  not out               |
+|                                                            |
+|  Extras: 5 wd                                             |
 |                                                            |
 |  BOWLING                                                   |
 |  Bowler                Overs  Runs  Wkts     Econ  |
 |  --------------------------------------------------------  |
-|  Jofra Archer            4.0    53    0    13.25  |
-|  Ben Stokes              4.0    42    1    10.50  |
-|  Adil Rashid             4.0    43    1    10.75  |
-|  Chris Woakes            4.0    48    4    12.00  |
-|  Moeen Ali               4.0    44    1    11.00  |
+|  Jofra Archer            4.0    58    1    14.50  |
+|  Ben Stokes              4.0    31    2     7.75  |
+|  Adil Rashid             4.0    46    0    11.50  |
+|  Chris Woakes            4.0    49    0    12.25  |
+|  Moeen Ali               4.0    43    1    10.75  |
 |                                                            |
-|  Total: 230/7 in 20.0 overs                                   |
+|  Total: 226/5 in 20.0 overs                                   |
 +============================================================+
