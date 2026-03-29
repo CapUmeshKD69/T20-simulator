@@ -1,6 +1,7 @@
 Algorithm,ThreadID,Role,ExpectedDuration,WaitTimeMs,RosterIndex,IsMiddleOrder
-SJF,3,Batsman,5,319.229,4,1
-SJF,4,Batsman,7,523.908,5,1
-SJF,6,Batsman,10,956.99,7,1
-SJF,5,Batsman,12,2207.09,6,1
-SJF,7,Batsman,15,2251.89,8,0
+SJF,7,Batsman,3,715.804,8,0
+SJF,8,Batsman,4,865.271,9,0
+SJF,9,Batsman,5,1526.32,10,0
+SJF,3,Batsman,6,1565.6,4,1
+SJF,4,Batsman,7,1832.37,5,1
+SJF,6,Batsman,10,1998.98,7,1

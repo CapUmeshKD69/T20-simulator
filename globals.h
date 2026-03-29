@@ -141,7 +141,7 @@ extern bool delivery_is_wide;    // true when the bowler bowls a wide
 //  Each tries to acquire their current end, then the other.
 //  With some probability a batsman "lets go" of his crease.
 //  Possible outcomes:
-//    - Both let go      → runs credited, no wicket
+//    - Both let go      → runs-1 credited, no wicket
 //    - one keeps, other one lets go → deadlock → umpire run-out
 //    - Neither lets go  → no wicket (safe)
 //    

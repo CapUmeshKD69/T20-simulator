@@ -35,14 +35,14 @@ int main() {
     99,  // Rohit Sharma       - opener, won't be in pavilion
     99,  // Abhishek Sharma    - opener, won't be in pavilion
     30,   // Virat Kohli        - top order, SJF picks first
-    5,   // Suryakumar Yadav
+    6,   // Suryakumar Yadav
     7,   // KL Rahul
     12,  // Hardik Pandya
     10,  // MS Dhoni           - lower than Hardik, SJF picks Dhoni before Hardik
-    15,  // Axar Patel
-    20,  // Varun Chakravarthy
-    25,  // Arshdeep Singh
-    30   // Jasprit Bumrah     - tail, SJF picks last
+    3,  // Axar Patel
+    4,  // Varun Chakravarthy
+    5,  // Arshdeep Singh
+    20  // Jasprit Bumrah     - tail, SJF picks last
 };
 
     //Track init status for cleanup , it is not strictly needed for this simulation since we will exit after main, but it's good practice
@@ -94,7 +94,7 @@ int main() {
 
   // hardcoded config for simplicity
     use_sjf_scheduling      = true;
-    use_priority_scheduling = false;
+    use_priority_scheduling = false ;
 
 
     // Record simulation start time for timestamping logs , just to start 
