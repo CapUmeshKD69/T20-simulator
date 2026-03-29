@@ -1,13 +1,13 @@
-#include "entities.h"
+#include "entities/entities.h"
 #include "globals.h"
 
-#include <algorithm>
 #include <cerrno>
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <unordered_set>
+using namespace std;
 
 namespace {
 
@@ -26,111 +26,127 @@ bool InitCondVar(pthread_cond_t* cv, const char* name) {
 }  // namespace
 
 int main() {
-    PlayerControlBlock* fielding_team[TEAM_SIZE] = {nullptr};
-    PlayerControlBlock* batting_team[TEAM_SIZE]  = {nullptr};
+    PlayerControlBlock* fielding_team[TEAM_SIZE] = {nullptr}; // array to hold pointers to all fielders + wicketkeeper
+    PlayerControlBlock* batting_team[TEAM_SIZE]  = {nullptr}; // array to hold pointers to all batsmen 
     pthread_t umpire_thread          = static_cast<pthread_t>(0);
     pthread_t bowler_manager_thread  = static_cast<pthread_t>(0);
 
-    // ── Track init status for cleanup ────────────
-    bool score_mutex_ready = false, end1_mutex_ready = false, end2_mutex_ready = false;
-    bool ball_mutex_ready = false, log_mutex_ready = false, file_mutex_ready = false;
-    bool delivery_cond_ready = false, resolved_cond_ready = false;
-    bool fielders_cond_ready = false, keeper_cond_ready = false;
-    bool umpire_cond_ready = false, batsman_cond_ready = false;
-    bool run_exchange_cond_ready = false, bowler_manager_cond_ready = false;
-    bool crease_sem_ready = false;
+    const int burst_times[] = {
+    99,  // Rohit Sharma       - opener, won't be in pavilion
+    99,  // Abhishek Sharma    - opener, won't be in pavilion
+    30,   // Virat Kohli        - top order, SJF picks first
+    5,   // Suryakumar Yadav
+    7,   // KL Rahul
+    12,  // Hardik Pandya
+    10,  // MS Dhoni           - lower than Hardik, SJF picks Dhoni before Hardik
+    15,  // Axar Patel
+    20,  // Varun Chakravarthy
+    25,  // Arshdeep Singh
+    30   // Jasprit Bumrah     - tail, SJF picks last
+};
 
-    // ── Init mutexes ─────────────────────────────
-    if (!InitMutex(&score_mutex, "score_mutex"))   return EXIT_FAILURE;
-    score_mutex_ready = true;
+    //Track init status for cleanup , it is not strictly needed for this simulation since we will exit after main, but it's good practice
+    bool score_mutex_created = false, end1_mutex_created = false, end2_mutex_created = false;
+    bool ball_mutex_created = false, log_mutex_created = false, file_mutex_created = false;
+    bool delivery_cond_created = false, resolved_cond_created = false;
+    bool fielders_cond_created = false, keeper_cond_created = false;
+    bool umpire_cond_created = false, batsman_cond_created = false;
+    bool run_exchange_cond_created = false, bowler_manager_cond_created = false;
+    bool crease_sem_created = false;
+
+    // mutexes ,  we are initializing all mutexes and condition variables at the start of main, and if any initialization fails, we print an error and exit. We also keep track of which ones were successfully created so that we can clean them up properly before exiting.
+    if (!InitMutex(&score_mutex, "score_mutex"))   return EXIT_FAILURE; // no mutex, no point continuing , no need to cleanup 
+    score_mutex_created = true;
     if (!InitMutex(&end1_mutex,  "end1_mutex"))    goto cleanup;
-    end1_mutex_ready = true;
+    end1_mutex_created = true;
     if (!InitMutex(&end2_mutex,  "end2_mutex"))    goto cleanup;
-    end2_mutex_ready = true;
+    end2_mutex_created = true;
     if (!InitMutex(&ball_mutex,  "ball_mutex"))    goto cleanup;
-    ball_mutex_ready = true;
+    ball_mutex_created = true;
     if (!InitMutex(&log_mutex,   "log_mutex"))     goto cleanup;
-    log_mutex_ready = true;
+    log_mutex_created = true;
     if (!InitMutex(&file_mutex,  "file_mutex"))    goto cleanup;
-    file_mutex_ready = true;
+    file_mutex_created = true;
 
-    // ── Init condition variables ─────────────────
+    // condition variables
     if (!InitCondVar(&delivery_cond,       "delivery_cond"))       goto cleanup;
-    delivery_cond_ready = true;
+    delivery_cond_created = true;
     if (!InitCondVar(&resolved_cond,       "resolved_cond"))       goto cleanup;
-    resolved_cond_ready = true;
+    resolved_cond_created = true;
     if (!InitCondVar(&fielders_cond,       "fielders_cond"))       goto cleanup;
-    fielders_cond_ready = true;
+    fielders_cond_created = true;
     if (!InitCondVar(&keeper_cond,         "keeper_cond"))         goto cleanup;
-    keeper_cond_ready = true;
+    keeper_cond_created = true;
     if (!InitCondVar(&umpire_cond,         "umpire_cond"))         goto cleanup;
-    umpire_cond_ready = true;
+    umpire_cond_created = true;
     if (!InitCondVar(&batsman_cond,        "batsman_cond"))        goto cleanup;
-    batsman_cond_ready = true;
+    batsman_cond_created = true;
     if (!InitCondVar(&run_exchange_cond,   "run_exchange_cond"))   goto cleanup;
-    run_exchange_cond_ready = true;
+    run_exchange_cond_created = true;
     if (!InitCondVar(&bowler_manager_cond, "bowler_manager_cond")) goto cleanup;
-    bowler_manager_cond_ready = true;
+    bowler_manager_cond_created = true;
 
-    if (sem_init(&crease_semaphore, 0, 2) != 0) {
-        perror("sem_init(crease_semaphore)");
+    if (psem_init(&crease_semaphore, 2) != 0) {
+        perror("psem_init(crease_semaphore)");
         goto cleanup;
     }
-    crease_sem_ready = true;
+    crease_sem_created = true;
 
-    // ── Configuration ────────────────────────────
+  // hardcoded config for simplicity
     use_sjf_scheduling      = true;
-    use_priority_scheduling = true;
+    use_priority_scheduling = false;
 
-    simulation_start_time = std::chrono::high_resolution_clock::now();
 
-    // ── Open CSV files ───────────────────────────
-    gantt_log_file.open("gantt_chart.csv", std::ios::out | std::ios::trunc);
+    // Record simulation start time for timestamping logs , just to start 
+    simulation_start_time = chrono::high_resolution_clock::now();
+
+    //Open CSV files 
+    gantt_log_file.open("gantt_chart.csv", ios::out | ios::trunc);
     if (!gantt_log_file.is_open()) { perror("open(gantt_chart.csv)"); goto cleanup; }
     gantt_log_file << "Timestamp,ThreadID,Role,Action,Resource\n";
     gantt_log_file.flush();
 
-    {
-        const char* wf = use_sjf_scheduling ? "wait_times_sjf.csv" : "wait_times_fcfs.csv";
-        wait_time_log_file.open(wf, std::ios::out | std::ios::trunc);
+    { // opening wait time log file in a separate block just to reuse the wf variable and keep it close to its usage
+        const char* wf = use_sjf_scheduling ? "wait_times_sjf.csv" : "wait_times_fcfs.csv"; // selecting filename based on scheduling algorithm for easier analysis
+        wait_time_log_file.open(wf, ios::out | ios::trunc);
         if (!wait_time_log_file.is_open()) { perror("open(wait_times)"); goto cleanup; }
         wait_time_log_file << "Algorithm,ThreadID,Role,ExpectedDuration,WaitTimeMs,RosterIndex,IsMiddleOrder\n";
         wait_time_log_file.flush();
     }
 
-    // ── Reset all shared state ───────────────────
-    g_match_context = {0, 0, 0, 0};
-    match_completed       = false;
-    match_intensity_high  = false;
-    active_striker_id     = -1;
-    non_striker_id        = -1;
-    active_batsmen_count  = 0;
-    delivery_bowled       = false;
+    //  Reset all shared state
+    g_match_context = {0, 0, 0, 0}; // global_score, total_wickets, current_over, balls_in_current_over
+    match_completed       = false; // set to true by umpire when match is over
+    match_intensity_high  = false;// it will become true after death over activation, affects scheduling decisions
+    active_striker_id     = -1; // player_id of striker, -1 if no striker currently  like in between overs and wicket there will be no batsman just to prevent deadlock
+    non_striker_id        = -1; // player_id of non-striker, -1 if no non-striker currently
+    active_batsmen_count  = 0; // 0 batsmen at start
+    delivery_bowled       = false; // set by bowler when ball is bowled, striker waits on this
     delivery_resolved     = true;   // so bowler can start first ball
-    ball_in_air           = false;
-    is_ball_in_air        = false;
-    shared_hit_result     = INVALID_HIT_RESULT;
-    current_ball_sequence = 0;
-    handled_ball_sequence = -1;
-    keeper_event_pending  = false;
-    run_exchange_needed   = false;
-    exchange_resolved     = false;
-    exchange_wicket       = false;
-    over_change_requested = false;
-    wicket_fell           = false;
-    pavilion_size         = 0;
-    bowler_pool_size      = 0;
-    current_bowler_index  = 0;
-    current_bowler_pcb    = nullptr;
-    active_striker_pcb    = nullptr;
-    active_non_striker_pcb = nullptr;
+    ball_in_air           = false; // striker sets this on hit, fielder/keeper set to false after resolving
+    shared_hit_result     = INVALID_HIT_RESULT; //  how many runs are there for a particular ball , set by fielder or keeper to resolve the ball, striker waits on this after hit  or mis ,  
+    current_ball_sequence = 0; //  incremented by bowler for each new delivvery , so that we can make a track of which delivery is being processed
+    handled_ball_sequence = -1; // set by fielder/keeper when they resolve a ball, so that we can track if the striker is waiting for a resolution for the correct delivery
+    keeper_event_pending  = false; // set by striker when he misses, so that keeper can step in to resolve, also used for byes when striker misses but keeper has to decide if he can take a run or not
+    run_exchange_needed   = false; // set by striker when he takes an odd run, so that both batsmen know they need to swap creases, umpire waits on this to coordinate the exchange
+    exchange_resolved     = false; // set by umpire when the run exchange is resolved, so that batsmen can proceed after an odd run
+    exchange_wicket       = false; // set by umpire when there is a run-out during the exchange, so that batsmen can know the outcome of the exchange and react accordingly
+    over_change_requested = false; // set by umpire when an over is completed so that bowler manager can bring in the next bowler and reset the strike if needed
+    wicket_fell           = false; // set by umpire when a wicket falls, so that he can bring in the next batsman if needed and also for stats tracking
+    pavilion_size         = 0; // size of the pavilion queu that is  how many batsmen are waiting
+    bowler_pool_size      = 0; // how many bowlers are in the pool
+    current_bowler_index  = 0; // index of the current bowler in the pool  this will be used for round-robin selection
+    current_bowler_pcb    = nullptr; // pointer to the current bowler CB 
+    active_striker_pcb    = nullptr;// pointer to the current striker CB
+    active_non_striker_pcb = nullptr;// pointer to the current non-striker CB
 
-    // ── Create player control blocks ─────────────
+    //  Create player control blocks
+
     for (int i = 0; i < TEAM_SIZE; ++i) {
-        fielding_team[i] = new PlayerControlBlock{};
-        batting_team[i]  = new PlayerControlBlock{};
+        fielding_team[i] = new PlayerControlBlock{}; // allocate a new PCB for each fielder and wicketkeeper
+        batting_team[i]  = new PlayerControlBlock{};// allocate a new PCB for each batsman , this is a struct define in file
 
-        fielding_team[i]->player_id             = i;
+        fielding_team[i]->player_id             = i; 
         fielding_team[i]->thread_id             = static_cast<pthread_t>(0);
         fielding_team[i]->is_active_on_pitch    = false;
         fielding_team[i]->is_waiting_in_pavilion = false;
@@ -148,8 +164,8 @@ int main() {
         fielding_team[i]->total_balls_bowled     = 0;
         fielding_team[i]->runs_conceded          = 0;
         fielding_team[i]->wickets_taken          = 0;
-        std::memset(fielding_team[i]->name, 0, sizeof(fielding_team[i]->name));
-        std::memset(fielding_team[i]->how_out, 0, sizeof(fielding_team[i]->how_out));
+        memset(fielding_team[i]->name, 0, sizeof(fielding_team[i]->name));
+        memset(fielding_team[i]->how_out, 0, sizeof(fielding_team[i]->how_out));
 
         if (i == 0) {
             fielding_team[i]->role = PlayerRole::WICKETKEEPER;
@@ -168,7 +184,7 @@ int main() {
         batting_team[i]->role                  = PlayerRole::BATSMAN;
         batting_team[i]->is_active_on_pitch    = false;
         batting_team[i]->is_waiting_in_pavilion = true;
-        batting_team[i]->expected_stay_duration = TEAM_SIZE - i;
+        batting_team[i]->expected_stay_duration = burst_times[i];
         batting_team[i]->deliveries_bowled      = 0;
         batting_team[i]->last_ball_faced        = -1;
         batting_team[i]->arrival_time           = 0.0;
@@ -182,71 +198,73 @@ int main() {
         batting_team[i]->total_balls_bowled     = 0;
         batting_team[i]->runs_conceded          = 0;
         batting_team[i]->wickets_taken          = 0;
-        std::memset(batting_team[i]->name, 0, sizeof(batting_team[i]->name));
-        std::strncpy(batting_team[i]->how_out, "not out", sizeof(batting_team[i]->how_out) - 1);
+        memset(batting_team[i]->name, 0, sizeof(batting_team[i]->name));
+        strncpy(batting_team[i]->how_out, "not out", sizeof(batting_team[i]->how_out) - 1);
 
         all_batsmen[i] = batting_team[i];
     }
 
-    // Death-over specialist
-    batting_team[7]->is_death_over_specialist = true;
-    batting_team[7]->priority_score = 100;
+    // Death-over specialists
+    batting_team[5]->is_death_over_specialist = true;  // Hardik Pandya
+    batting_team[5]->priority_score = 100;
+    batting_team[6]->is_death_over_specialist = true;  // MS Dhoni
+    batting_team[6]->priority_score = 100;
 
-    // ── Assign player names ──────────────────────
+    // â”€â”€ Assign player names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     {
         const char* bat_names[] = {
-            "Rohit Sharma", "Shubman Gill", "Virat Kohli",
+            "Rohit Sharma", "Abhishek Sharma", "Virat Kohli",
             "Suryakumar Yadav", "KL Rahul", "Hardik Pandya",
-            "Ravindra Jadeja", "MS Dhoni", "R Ashwin",
-            "Kuldeep Yadav", "Jasprit Bumrah"
+            "MS Dhoni", "Axar Patel", "Varun chakravarthy",
+            "Arshdeep Singh", "Jasprit Bumrah"
         };
         const char* field_names[] = {
             "Jos Buttler",      // keeper
             "Jofra Archer",     // bowler 1
-            "Mark Wood",        // bowler 2
+            "Ben Stokes",        // bowler 2
             "Adil Rashid",      // bowler 3
             "Chris Woakes",     // bowler 4
             "Moeen Ali",        // bowler 5
-            "Ben Stokes",       // fielder 6
+            "Phil Salt",       // fielder 6
             "Joe Root",         // fielder 7
-            "Jonny Bairstow",   // fielder 8
+            "Jecob Bethel",   // fielder 8
             "Harry Brook",      // fielder 9
             "Liam Livingstone"  // fielder 10
         };
         for (int i = 0; i < TEAM_SIZE; ++i) {
-            std::strncpy(batting_team[i]->name, bat_names[i], sizeof(batting_team[i]->name) - 1);
-            std::strncpy(fielding_team[i]->name, field_names[i], sizeof(fielding_team[i]->name) - 1);
+            strncpy(batting_team[i]->name, bat_names[i], sizeof(batting_team[i]->name) - 1);
+            strncpy(fielding_team[i]->name, field_names[i], sizeof(fielding_team[i]->name) - 1);
         }
     }
 
-    // ── Setup first bowler ───────────────────────
+    // â”€â”€ Setup first bowler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (bowler_pool_size > 0) {
         current_bowler_index = 0;
         current_bowler_pcb = bowler_pool[0];
         current_bowler_pcb->is_active_on_pitch = true;
     }
 
-    // ── Print match banner ───────────────────────
-    std::puts("\n+----------------------------------------------+");
-    std::puts("|         T20 MATCH SIMULATOR                  |");
-    std::puts("|  Threads: Bowler, Batsmen, Fielders, Umpire  |");
-    std::puts("|  Sync: pthreads mutexes + condvars + sem     |");
-    std::puts("+----------------------------------------------+\n");
-    std::fflush(stdout);
+    // â”€â”€ Print match banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    puts("\n+----------------------------------------------+");
+    puts("|         T20 MATCH SIMULATOR                  |");
+    puts("|  Threads: Bowler, Batsmen, Fielders, Umpire  |");
+    puts("|  Sync: pthreads mutexes + condvars + sem     |");
+    puts("+----------------------------------------------+\n");
+    fflush(stdout);
 
-    // ── Start umpire ─────────────────────────────
+    // â”€â”€ Start umpire â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     {
         int rc = pthread_create(&umpire_thread, nullptr, umpire_routine, nullptr);
         if (rc != 0) { errno = rc; perror("pthread_create(umpire)"); goto cleanup; }
     }
 
-    // ── Start bowler manager ─────────────────────
+    // â”€â”€ Start bowler manager â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     {
         int rc = pthread_create(&bowler_manager_thread, nullptr, bowler_manager_routine, nullptr);
         if (rc != 0) { errno = rc; perror("pthread_create(bowler_mgr)"); goto cleanup; }
     }
 
-    // ── Start fielding team threads ──────────────
+    // â”€â”€ Start fielding team threads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     for (int i = 0; i < TEAM_SIZE; ++i) {
         void* (*entry)(void*) = nullptr;
 
@@ -266,9 +284,9 @@ int main() {
         }
     }
 
-    // ── Start opening batsmen ────────────────────
+    // â”€â”€ Start opening batsmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     for (int i = 0; i < 2; ++i) {
-        sem_wait(&crease_semaphore);
+        psem_wait(&crease_semaphore);
 
         batting_team[i]->is_active_on_pitch     = true;
         batting_team[i]->is_waiting_in_pavilion  = false;
@@ -276,7 +294,7 @@ int main() {
         int rc = pthread_create(&batting_team[i]->thread_id, nullptr, batsman_routine, batting_team[i]);
         if (rc != 0) {
             errno = rc; perror("pthread_create(opener)");
-            sem_post(&crease_semaphore);
+            psem_post(&crease_semaphore);
             match_completed = true;
             goto join_and_cleanup;
         }
@@ -288,23 +306,23 @@ int main() {
     active_striker_id      = batting_team[0]->player_id;
     non_striker_id         = batting_team[1]->player_id;
 
-    std::printf("  -> Openers: %s (striker) & %s (non-striker)\n\n",
+    printf("  -> Openers: %s (striker) & %s (non-striker)\n\n",
                 batting_team[0]->name, batting_team[1]->name);
-    std::fflush(stdout);
+    fflush(stdout);
 
     // Track batting order
     batting_order[0] = 0;
     batting_order[1] = 1;
     batting_order_count = 2;
 
-    // ── Remaining batsmen go to pavilion ─────────
+    // â”€â”€ Remaining batsmen go to pavilion â”€â”€â”€â”€â”€â”€â”€â”€â”€
     for (int i = 2; i < TEAM_SIZE; ++i) {
         batting_team[i]->arrival_time = get_timestamp();
         pavilion_queue[pavilion_size++] = batting_team[i];
     }
 
 join_and_cleanup:
-    // ── Wait for umpire (drives match end) ───────
+    // â”€â”€ Wait for umpire (drives match end) â”€â”€â”€â”€â”€â”€â”€
     if (umpire_thread != static_cast<pthread_t>(0))
         pthread_join(umpire_thread, nullptr);
 
@@ -322,51 +340,47 @@ join_and_cleanup:
         pthread_join(bowler_manager_thread, nullptr);
 
     for (int i = 0; i < TEAM_SIZE; ++i) {
-        if (fielding_team[i] && fielding_team[i]->thread_id != static_cast<pthread_t>(0)) {
-            pthread_cancel(fielding_team[i]->thread_id);
+        if (fielding_team[i] && fielding_team[i]->thread_id != static_cast<pthread_t>(0))
             pthread_join(fielding_team[i]->thread_id, nullptr);
-        }
     }
 
     for (int i = 0; i < TEAM_SIZE; ++i) {
-        if (batting_team[i] && batting_team[i]->thread_id != static_cast<pthread_t>(0)) {
-            pthread_cancel(batting_team[i]->thread_id);
+        if (batting_team[i] && batting_team[i]->thread_id != static_cast<pthread_t>(0))
             pthread_join(batting_team[i]->thread_id, nullptr);
-        }
     }
 
-    // ── Final scorecard ──────────────────────────
+    // â”€â”€ Final scorecard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     {
         int sc = g_match_context.global_score;
         int wk = g_match_context.total_wickets;
         int ov = g_match_context.current_over;
         int bl = g_match_context.balls_in_current_over;
 
-        std::puts("\n+============================================================+");
-        std::puts("|                   FINAL SCORECARD                          |");
-        std::printf("|  INDIA innings: %d/%d in %d.%d overs", sc, wk, ov, bl);
-        std::puts("                            |");
-        std::puts("+============================================================+");
-        std::puts("|                                                            |");
-        std::puts("|  BATTING                                                   |");
-        std::printf("|  %-20s  %4s  %4s  %3s  %3s  %-20s  |\n",
+        puts("\n+============================================================+");
+        puts("|                   FINAL SCORECARD                          |");
+        printf("|  INDIA innings: %d/%d in %d.%d overs", sc, wk, ov, bl);
+        puts("                            |");
+        puts("+============================================================+");
+        puts("|                                                            |");
+        puts("|  BATTING                                                   |");
+        printf("|  %-20s  %4s  %4s  %3s  %3s  %-20s  |\n",
                     "Batsman", "Runs", "Balls", "4s", "6s", "How Out");
-        std::puts("|  --------------------------------------------------------  |");
+        puts("|  --------------------------------------------------------  |");
 
         for (int i = 0; i < batting_order_count; ++i) {
             int idx = batting_order[i];
             PlayerControlBlock* b = all_batsmen[idx];
             if (!b) continue;
-            std::printf("|  %-20s  %4d  %4d  %3d  %3d  %-20s  |\n",
+            printf("|  %-20s  %4d  %4d  %3d  %3d  %-20s  |\n",
                         b->name, b->runs_scored, b->balls_faced,
                         b->fours, b->sixes, b->how_out);
         }
 
-        std::puts("|                                                            |");
-        std::puts("|  BOWLING                                                   |");
-        std::printf("|  %-20s  %4s  %4s  %3s  %7s  |\n",
+        puts("|                                                            |");
+        puts("|  BOWLING                                                   |");
+        printf("|  %-20s  %4s  %4s  %3s  %7s  |\n",
                     "Bowler", "Overs", "Runs", "Wkts", "Econ");
-        std::puts("|  --------------------------------------------------------  |");
+        puts("|  --------------------------------------------------------  |");
 
         for (int i = 0; i < BOWLER_POOL_SIZE; ++i) {
             PlayerControlBlock* bw = all_bowlers[i];
@@ -376,22 +390,22 @@ join_and_cleanup:
             int rem_b = tb % 6;
             double econ = (tb > 0) ? (bw->runs_conceded * 6.0 / tb) : 0.0;
             char ov_str[8];
-            std::snprintf(ov_str, sizeof(ov_str), "%d.%d", full_ov, rem_b);
-            std::printf("|  %-20s  %5s  %4d  %3d  %7.2f  |\n",
+            snprintf(ov_str, sizeof(ov_str), "%d.%d", full_ov, rem_b);
+            printf("|  %-20s  %5s  %4d  %3d  %7.2f  |\n",
                         bw->name, ov_str, bw->runs_conceded,
                         bw->wickets_taken, econ);
         }
 
-        std::puts("|                                                            |");
-        std::printf("|  Total: %d/%d in %d.%d overs", sc, wk, ov, bl);
-        std::puts("                                   |");
-        std::puts("+============================================================+");
+        puts("|                                                            |");
+        printf("|  Total: %d/%d in %d.%d overs", sc, wk, ov, bl);
+        puts("                                   |");
+        puts("+============================================================+");
     }
-    std::fflush(stdout);
+    fflush(stdout);
 
-    // ── Free PCBs ────────────────────────────────
+    // â”€â”€ Free PCBs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     {
-        std::unordered_set<PlayerControlBlock*> freed;
+        unordered_set<PlayerControlBlock*> freed;
         auto del = [&](PlayerControlBlock*& p) {
             if (p && freed.insert(p).second) delete p;
             p = nullptr;
@@ -407,21 +421,23 @@ join_and_cleanup:
 cleanup:
     if (gantt_log_file.is_open())      { gantt_log_file.flush();      gantt_log_file.close(); }
     if (wait_time_log_file.is_open())  { wait_time_log_file.flush();  wait_time_log_file.close(); }
-    if (crease_sem_ready)              sem_destroy(&crease_semaphore);
-    if (bowler_manager_cond_ready)     pthread_cond_destroy(&bowler_manager_cond);
-    if (run_exchange_cond_ready)       pthread_cond_destroy(&run_exchange_cond);
-    if (batsman_cond_ready)            pthread_cond_destroy(&batsman_cond);
-    if (umpire_cond_ready)             pthread_cond_destroy(&umpire_cond);
-    if (keeper_cond_ready)             pthread_cond_destroy(&keeper_cond);
-    if (fielders_cond_ready)           pthread_cond_destroy(&fielders_cond);
-    if (resolved_cond_ready)           pthread_cond_destroy(&resolved_cond);
-    if (delivery_cond_ready)           pthread_cond_destroy(&delivery_cond);
-    if (file_mutex_ready)              pthread_mutex_destroy(&file_mutex);
-    if (log_mutex_ready)               pthread_mutex_destroy(&log_mutex);
-    if (ball_mutex_ready)              pthread_mutex_destroy(&ball_mutex);
-    if (end2_mutex_ready)              pthread_mutex_destroy(&end2_mutex);
-    if (end1_mutex_ready)              pthread_mutex_destroy(&end1_mutex);
-    if (score_mutex_ready)             pthread_mutex_destroy(&score_mutex);
+    if (crease_sem_created) {
+        psem_destroy(&crease_semaphore);
+    }
+    if (bowler_manager_cond_created)     pthread_cond_destroy(&bowler_manager_cond);
+    if (run_exchange_cond_created)       pthread_cond_destroy(&run_exchange_cond);
+    if (batsman_cond_created)            pthread_cond_destroy(&batsman_cond);
+    if (umpire_cond_created)             pthread_cond_destroy(&umpire_cond);
+    if (keeper_cond_created)             pthread_cond_destroy(&keeper_cond);
+    if (fielders_cond_created)           pthread_cond_destroy(&fielders_cond);
+    if (resolved_cond_created)           pthread_cond_destroy(&resolved_cond);
+    if (delivery_cond_created)           pthread_cond_destroy(&delivery_cond);
+    if (file_mutex_created)              pthread_mutex_destroy(&file_mutex);
+    if (log_mutex_created)               pthread_mutex_destroy(&log_mutex);
+    if (ball_mutex_created)              pthread_mutex_destroy(&ball_mutex);
+    if (end2_mutex_created)              pthread_mutex_destroy(&end2_mutex);
+    if (end1_mutex_created)              pthread_mutex_destroy(&end1_mutex);
+    if (score_mutex_created)             pthread_mutex_destroy(&score_mutex);
 
     return EXIT_SUCCESS;
 }

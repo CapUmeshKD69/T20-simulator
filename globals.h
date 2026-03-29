@@ -4,7 +4,47 @@
 #include <chrono>
 #include <fstream>
 #include <pthread.h>
-#include <semaphore.h>
+
+// ─────────────────────────────────────────────────
+//  Portable counting semaphore (pthreads only)
+// ─────────────────────────────────────────────────
+struct PthreadSemaphore {
+    pthread_mutex_t mutex;
+    pthread_cond_t  cond;
+    int             count;
+};
+
+inline int psem_init(PthreadSemaphore* s, int value) {
+    s->count = value;
+    int rc = pthread_mutex_init(&s->mutex, nullptr);
+    if (rc != 0) return rc;
+    rc = pthread_cond_init(&s->cond, nullptr);
+    if (rc != 0) { pthread_mutex_destroy(&s->mutex); return rc; }
+    return 0;
+}
+
+inline int psem_wait(PthreadSemaphore* s) {
+    pthread_mutex_lock(&s->mutex);
+    while (s->count <= 0)
+        pthread_cond_wait(&s->cond, &s->mutex);
+    --s->count;
+    pthread_mutex_unlock(&s->mutex);
+    return 0;
+}
+
+inline int psem_post(PthreadSemaphore* s) {
+    pthread_mutex_lock(&s->mutex);
+    ++s->count;
+    pthread_cond_signal(&s->cond);
+    pthread_mutex_unlock(&s->mutex);
+    return 0;
+}
+
+inline int psem_destroy(PthreadSemaphore* s) {
+    pthread_cond_destroy(&s->cond);
+    pthread_mutex_destroy(&s->mutex);
+    return 0;
+}
 
 // ─────────────────────────────────────────────────
 //  Constants
@@ -33,9 +73,9 @@ enum class PlayerRole {
     WICKETKEEPER
 };
 
-struct PlayerControlBlock {
-    int player_id;
-    pthread_t thread_id;
+struct PlayerControlBlock { // PCB for each player thread so that we can load as we are having only 1 ining we are not seperting the different pcbs like batsmancontrolblock and fieldercontrolblock as they will have lot of common fields and to keep it simple we are using single PCB for all players
+    int player_id; // 0-10 for fielders (0 is keeper), 11-21 for batsmen
+    pthread_t thread_id; // 
     PlayerRole role;
     bool is_active_on_pitch;
     bool is_waiting_in_pavilion;
@@ -47,7 +87,7 @@ struct PlayerControlBlock {
     int priority_score;
     bool is_death_over_specialist;
 
-    // Per-player stats for scorecard
+    // Per-player stats for final record 
     char name[32];
     int runs_scored;
     int balls_faced;
@@ -55,7 +95,7 @@ struct PlayerControlBlock {
     int sixes;
     char how_out[64];
 
-    // Bowler stats
+    // Bowler stats for final record
     int total_balls_bowled;
     int runs_conceded;
     int wickets_taken;
@@ -88,7 +128,6 @@ extern bool match_intensity_high;
 extern bool delivery_bowled;
 extern bool delivery_resolved;
 extern bool ball_in_air;
-extern bool is_ball_in_air;
 extern int  shared_hit_result;
 extern int  current_ball_sequence;
 extern int  handled_ball_sequence;
@@ -169,7 +208,7 @@ extern pthread_cond_t umpire_cond;         // batsman → umpire (wicket/over)
 extern pthread_cond_t run_exchange_cond;   // exchange coordination
 extern pthread_cond_t bowler_manager_cond; // umpire → bowler manager
 
-extern sem_t crease_semaphore;  // max 2 batsmen active
+extern PthreadSemaphore crease_semaphore;  // max 2 batsmen active
 
 // ─────────────────────────────────────────────────
 //  Timing / CSV logging

@@ -1,5 +1,5 @@
 #include "globals.h"
-
+using namespace std;
 MatchContext g_match_context = {0, 0, 0, 0};
 
 bool match_completed       = false;
@@ -14,7 +14,6 @@ bool match_intensity_high  = false;
 bool delivery_bowled    = false;
 bool delivery_resolved  = false;
 bool ball_in_air        = false;
-bool is_ball_in_air     = false;
 int  shared_hit_result  = INVALID_HIT_RESULT;
 int  current_ball_sequence  = 0;
 int  handled_ball_sequence  = -1;
@@ -73,8 +72,13 @@ pthread_cond_t umpire_cond;
 pthread_cond_t run_exchange_cond;
 pthread_cond_t bowler_manager_cond;
 
-sem_t crease_semaphore;
+PthreadSemaphore crease_semaphore;
 
-std::chrono::high_resolution_clock::time_point simulation_start_time;
-std::ofstream gantt_log_file;
-std::ofstream wait_time_log_file;
+chrono::high_resolution_clock::time_point simulation_start_time;
+ofstream gantt_log_file;
+ofstream wait_time_log_file;
+
+double get_timestamp() {
+    auto now = chrono::high_resolution_clock::now();
+    return chrono::duration<double, milli>(now - simulation_start_time).count();
+}

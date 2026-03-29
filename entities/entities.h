@@ -2,7 +2,7 @@
 #define ENTITIES_H
 
 #include <pthread.h>
-#include "globals.h"
+#include "../globals.h"
 
 void* bowler_routine(void* arg);
 void* batsman_routine(void* arg);

@@ -1,0 +1,9 @@
+Algorithm,ThreadID,Role,ExpectedDuration,WaitTimeMs,RosterIndex,IsMiddleOrder
+FCFS,2,Batsman,30,4.7278,3,1
+FCFS,3,Batsman,5,115.545,4,1
+FCFS,4,Batsman,7,372.072,5,1
+FCFS,5,Batsman,12,595.903,6,1
+FCFS,6,Batsman,10,1432.44,7,1
+FCFS,7,Batsman,15,1548.9,8,0
+FCFS,8,Batsman,20,2460.51,9,0
+FCFS,9,Batsman,25,2524.14,10,0
