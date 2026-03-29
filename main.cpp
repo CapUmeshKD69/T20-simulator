@@ -28,8 +28,8 @@ bool InitCondVar(pthread_cond_t* cv, const char* name) {
 int main() {
     PlayerControlBlock* fielding_team[TEAM_SIZE] = {nullptr}; // array to hold pointers to all fielders + wicketkeeper
     PlayerControlBlock* batting_team[TEAM_SIZE]  = {nullptr}; // array to hold pointers to all batsmen 
-    pthread_t umpire_thread          = static_cast<pthread_t>(0);
-    pthread_t bowler_manager_thread  = static_cast<pthread_t>(0);
+    pthread_t umpire_thread          = static_cast<pthread_t>(0); // this is the thread  variable that will run the umpire routine , return 0  when  created succeesfily 
+    pthread_t bowler_manager_thread  = static_cast<pthread_t>(0); // this is the thread  variable that will run the bowler manager routine
 
     const int burst_times[] = {
     99,  // Rohit Sharma       - opener, won't be in pavilion
@@ -145,7 +145,7 @@ int main() {
     for (int i = 0; i < TEAM_SIZE; ++i) {
         fielding_team[i] = new PlayerControlBlock{}; // allocate a new PCB for each fielder and wicketkeeper
         batting_team[i]  = new PlayerControlBlock{};// allocate a new PCB for each batsman , this is a struct define in file
-
+        // from here we are setting the initial state for each player control block, we set the player_id, role, and other fields to their initial values. For fielders, player_id 0 is the wicketkeeper, 1 to BOWLER_POOL_SIZE are bowlers, and the rest are regular fielders. For batsmen, all are assigned the BATSMAN role and are initially waiting in the pavilion except for the openers who will be set as active on pitch later by the umpire. We also set some default values for stats and names, which will be updated during the match.
         fielding_team[i]->player_id             = i; 
         fielding_team[i]->thread_id             = static_cast<pthread_t>(0);
         fielding_team[i]->is_active_on_pitch    = false;
@@ -163,28 +163,28 @@ int main() {
         fielding_team[i]->sixes                  = 0;
         fielding_team[i]->total_balls_bowled     = 0;
         fielding_team[i]->runs_conceded          = 0;
-        fielding_team[i]->wickets_taken          = 0;
-        memset(fielding_team[i]->name, 0, sizeof(fielding_team[i]->name));
-        memset(fielding_team[i]->how_out, 0, sizeof(fielding_team[i]->how_out));
+        fielding_team[i]->wickets_taken          = 0; // these fields are not really relevant for fielders but we will keep them initialized for consistency, we will set actual stats later for the fielders as well based on their performance like catches and run-outs
+        memset(fielding_team[i]->name, 0, sizeof(fielding_team[i]->name)); // making it empty string just to be safe, we will set actual names later
+        memset(fielding_team[i]->how_out, 0, sizeof(fielding_team[i]->how_out)); // not really needed for fielders but just to be consistent, we will set actual status later
 
         if (i == 0) {
-            fielding_team[i]->role = PlayerRole::WICKETKEEPER;
-            fielding_team[i]->is_active_on_pitch = true;
+            fielding_team[i]->role = PlayerRole::WICKETKEEPER; // first player is the wicketkeeper
+            fielding_team[i]->is_active_on_pitch = true; // wicketkeeper is always active on the pitch
         } else if (i <= BOWLER_POOL_SIZE) {
-            fielding_team[i]->role = PlayerRole::BOWLER;
-            bowler_pool[bowler_pool_size++] = fielding_team[i];
-            all_bowlers[bowler_pool_size - 1] = fielding_team[i];
+            fielding_team[i]->role = PlayerRole::BOWLER; // next few players are bowlers and they go into the bowler pool
+            bowler_pool[bowler_pool_size++] = fielding_team[i]; // add to bowler pool
+            all_bowlers[bowler_pool_size - 1] = fielding_team[i]; // also add to all_bowlers just for  scorecard tracking
         } else {
-            fielding_team[i]->role = PlayerRole::FIELDER;
-            fielding_team[i]->is_active_on_pitch = true;
+            fielding_team[i]->role = PlayerRole::FIELDER;// rest are regular fielders
+            fielding_team[i]->is_active_on_pitch = true; // all fielders are active on the pitch
         }
-
+        // batting team setup 
         batting_team[i]->player_id             = i;
         batting_team[i]->thread_id             = static_cast<pthread_t>(0);
         batting_team[i]->role                  = PlayerRole::BATSMAN;
         batting_team[i]->is_active_on_pitch    = false;
         batting_team[i]->is_waiting_in_pavilion = true;
-        batting_team[i]->expected_stay_duration = burst_times[i];
+        batting_team[i]->expected_stay_duration = burst_times[i]; // we are hardcoding the expected stay duration for each batsman based on their typical performance and role in the team, this will be used by the SJF scheduler to make decisions about who to send in next from the pavilion when a wicket falls
         batting_team[i]->deliveries_bowled      = 0;
         batting_team[i]->last_ball_faced        = -1;
         batting_team[i]->arrival_time           = 0.0;
@@ -198,19 +198,20 @@ int main() {
         batting_team[i]->total_balls_bowled     = 0;
         batting_team[i]->runs_conceded          = 0;
         batting_team[i]->wickets_taken          = 0;
-        memset(batting_team[i]->name, 0, sizeof(batting_team[i]->name));
-        strncpy(batting_team[i]->how_out, "not out", sizeof(batting_team[i]->how_out) - 1);
+         // below two are for state tracking and stats
+        memset(batting_team[i]->name, 0, sizeof(batting_team[i]->name)); // making it empty string just to be safe, we will set actual names later
+        strncpy(batting_team[i]->how_out, "not out", sizeof(batting_team[i]->how_out) - 1); // initially all are not out, we will update this when they get out
 
-        all_batsmen[i] = batting_team[i];
+        all_batsmen[i] = batting_team[i]; // pool of all batsmen used at last for scorecard
     }
 
     // Death-over specialists
     batting_team[5]->is_death_over_specialist = true;  // Hardik Pandya
-    batting_team[5]->priority_score = 100;
+    batting_team[5]->priority_score = 100; // giving him a high priority score so that if we enable priority scheduling in high intensity situations, he will be preferred over others for the next wicket after the openers and top order are gone
     batting_team[6]->is_death_over_specialist = true;  // MS Dhoni
-    batting_team[6]->priority_score = 100;
+    batting_team[6]->priority_score = 100; 
 
-    // â”€â”€ Assign player names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // naming players
     {
         const char* bat_names[] = {
             "Rohit Sharma", "Abhishek Sharma", "Virat Kohli",
@@ -231,40 +232,39 @@ int main() {
             "Harry Brook",      // fielder 9
             "Liam Livingstone"  // fielder 10
         };
+         //  assigning named players to the pcb we created   for both teams
         for (int i = 0; i < TEAM_SIZE; ++i) {
             strncpy(batting_team[i]->name, bat_names[i], sizeof(batting_team[i]->name) - 1);
             strncpy(fielding_team[i]->name, field_names[i], sizeof(fielding_team[i]->name) - 1);
         }
     }
 
-    // â”€â”€ Setup first bowler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // giving first bowler the ball to start 
     if (bowler_pool_size > 0) {
         current_bowler_index = 0;
-        current_bowler_pcb = bowler_pool[0];
+        current_bowler_pcb = bowler_pool[0]; // first bowler
         current_bowler_pcb->is_active_on_pitch = true;
     }
 
-    // â”€â”€ Print match banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Print match banner 
     puts("\n+----------------------------------------------+");
     puts("|         T20 MATCH SIMULATOR                  |");
-    puts("|  Threads: Bowler, Batsmen, Fielders, Umpire  |");
-    puts("|  Sync: pthreads mutexes + condvars + sem     |");
     puts("+----------------------------------------------+\n");
     fflush(stdout);
 
-    // â”€â”€ Start umpire â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Start umpire 
     {
-        int rc = pthread_create(&umpire_thread, nullptr, umpire_routine, nullptr);
+        int rc = pthread_create(&umpire_thread, nullptr, umpire_routine, nullptr); //  creating a umpire thread with its routine   and storing  the tread in umpire thread variable 
         if (rc != 0) { errno = rc; perror("pthread_create(umpire)"); goto cleanup; }
     }
 
-    // â”€â”€ Start bowler manager â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Start bowler manager
     {
-        int rc = pthread_create(&bowler_manager_thread, nullptr, bowler_manager_routine, nullptr);
+        int rc = pthread_create(&bowler_manager_thread, nullptr, bowler_manager_routine, nullptr); //  if created succesfuly will give 0 and store the thread id in bowler_manager_thread variable
         if (rc != 0) { errno = rc; perror("pthread_create(bowler_mgr)"); goto cleanup; }
     }
 
-    // â”€â”€ Start fielding team threads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    //Start fielding team threads 
     for (int i = 0; i < TEAM_SIZE; ++i) {
         void* (*entry)(void*) = nullptr;
 
@@ -284,7 +284,7 @@ int main() {
         }
     }
 
-    // â”€â”€ Start opening batsmen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    //Start opening batsmen 
     for (int i = 0; i < 2; ++i) {
         psem_wait(&crease_semaphore);
 
@@ -292,7 +292,7 @@ int main() {
         batting_team[i]->is_waiting_in_pavilion  = false;
 
         int rc = pthread_create(&batting_team[i]->thread_id, nullptr, batsman_routine, batting_team[i]);
-        if (rc != 0) {
+        if (rc != 0) { // error handlong for thread craetion
             errno = rc; perror("pthread_create(opener)");
             psem_post(&crease_semaphore);
             match_completed = true;
@@ -315,14 +315,14 @@ int main() {
     batting_order[1] = 1;
     batting_order_count = 2;
 
-    // â”€â”€ Remaining batsmen go to pavilion â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Remaining batsmen go to pavilion 
     for (int i = 2; i < TEAM_SIZE; ++i) {
         batting_team[i]->arrival_time = get_timestamp();
         pavilion_queue[pavilion_size++] = batting_team[i];
     }
-
+ // below is the join and cleanup section where we wait for all threads to finish and then print the final scorecard and free resources, we wait for the umpire thread first since it controls the match flow and will signal when the match is completed, then we wake up all waiting threads to let them exit, and finally we join all threads to ensure they have finished before we proceed to print the scorecard and free resources.
 join_and_cleanup:
-    // â”€â”€ Wait for umpire (drives match end) â”€â”€â”€â”€â”€â”€â”€
+    // Wait for umpire (drives match end)
     if (umpire_thread != static_cast<pthread_t>(0))
         pthread_join(umpire_thread, nullptr);
 
@@ -349,7 +349,7 @@ join_and_cleanup:
             pthread_join(batting_team[i]->thread_id, nullptr);
     }
 
-    // â”€â”€ Final scorecard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Final scorecard
     {
         int sc = g_match_context.global_score;
         int wk = g_match_context.total_wickets;
@@ -403,7 +403,7 @@ join_and_cleanup:
     }
     fflush(stdout);
 
-    // â”€â”€ Free PCBs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Free PCBs 
     {
         unordered_set<PlayerControlBlock*> freed;
         auto del = [&](PlayerControlBlock*& p) {
@@ -417,7 +417,7 @@ join_and_cleanup:
         for (int i = 0; i < TEAM_SIZE; ++i) del(pavilion_queue[i]);
         for (int i = 0; i < BOWLER_POOL_SIZE; ++i) del(bowler_pool[i]);
     }
-
+//  cleaning up the resources 
 cleanup:
     if (gantt_log_file.is_open())      { gantt_log_file.flush();      gantt_log_file.close(); }
     if (wait_time_log_file.is_open())  { wait_time_log_file.flush();  wait_time_log_file.close(); }
